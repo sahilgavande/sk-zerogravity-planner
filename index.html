@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SK ZeroGravity Daily Planner | Stitch UI Production</title>
+  <meta name="theme-color" content="#08090F">
+  <meta name="description" content="Production-ready 24-hour time management web application with Anti-Gravity physics, Eisenhower Matrix, Focus Orb, Gym Sync, and Phone Dispatch Simulator.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Anti-Gravity Particle Background Canvas -->
+  <canvas id="anti-gravity-canvas"></canvas>
+
+  <!-- Main Container -->
+  <div class="app-container">
+
+    <!-- Top Sticky Navigation Bar -->
+    <header class="navbar">
+      <div class="brand-section">
+        <div class="brand-logo-orb">🪐</div>
+        <div class="brand-title-wrap">
+          <h1>SK ZeroGravity</h1>
+          <span class="subtitle">Daily Planner • Stitch UI #4972856916003344066</span>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Soundscapes Quick Toggles -->
+        <div class="soundscape-pill">
+          <button id="nav-toggle-binaural" class="sound-btn" title="Toggle 40Hz Gamma Binaural Beats">
+            🧠 40Hz
+          </button>
+          <button id="nav-toggle-drone" class="sound-btn" title="Toggle Ambient Space Drone">
+            🌌 Drone
+          </button>
+        </div>
+
+        <button class="btn btn-glass btn-sm" id="btn-open-gemini-modal" onclick="window.app.openModal('modal-gemini-settings')" title="Configure Google AI Studio (Gemini) API Key">
+          ✨ <span id="ai-status-indicator">AI Assistant</span>
+        </button>
+
+        <button class="btn btn-glass btn-sm" id="btn-export-json" title="Download backup of your schedule & matrix">
+          📥 Backup JSON
+        </button>
+
+        <button class="btn btn-glass btn-sm" id="btn-reset-blueprint" title="Reset to original blueprint data">
+          ↺ Reset
+        </button>
+
+        <button class="btn btn-primary btn-sm" onclick="window.app.switchTab('notifications')">
+          📱 Phone Alerts
+        </button>
+      </div>
+    </header>
+
+    <!-- Top HUD & Balance Banner -->
+    <section class="hud-banner">
+      <!-- Time & Orbit Card -->
+      <div class="glass-card glow-cyan-top time-display-card">
+        <div>
+          <div class="time-clock" id="hud-time-clock">00:00:00</div>
+          <div class="date-stamp" id="hud-date-stamp">Loading Orbit...</div>
+        </div>
+        <div class="orbit-badge">
+          <span class="pulse-dot"></span>
+          <span id="current-orbit-phase">SYNCHRONIZING...</span>
+        </div>
+      </div>
+
+      <!-- 24-Hour Balance Meter -->
+      <div class="glass-card glow-purple-top balance-card">
+        <h3>
+          <span>24-Hour Schedule Balance</span>
+          <span id="schedule-balance-score" style="color: var(--accent-cyan); font-weight: 700;">88% Optimal</span>
+        </h3>
+        <div class="balance-progress-bar">
+          <div id="bar-work" class="bar-segment bar-deep-work" style="width: 45%;" title="Deep Work"></div>
+          <div id="bar-gym" class="bar-segment bar-gym" style="width: 15%;" title="Gym & Fitness"></div>
+          <div id="bar-rest" class="bar-segment bar-rest" style="width: 25%;" title="Rest & Sleep"></div>
+          <div id="bar-routine" class="bar-segment bar-routine" style="width: 15%;" title="Health & Routine"></div>
+        </div>
+        <div class="balance-legend">
+          <div class="legend-item"><span class="legend-color" style="background: #00F5D4;"></span> Deep Work</div>
+          <div class="legend-item"><span class="legend-color" style="background: #FFB703;"></span> Gym & Fitness</div>
+          <div class="legend-item"><span class="legend-color" style="background: #9D4EDD;"></span> Recovery / Rest</div>
+          <div class="legend-item"><span class="legend-color" style="background: #4CC9F0;"></span> Health & Routine</div>
+        </div>
+      </div>
+
+      <!-- Quick Metrics HUD -->
+      <div class="glass-card">
+        <div class="metrics-row">
+          <div class="metric-box">
+            <div class="metric-value" id="metric-tasks-done">0/0</div>
+            <div class="metric-label">Tasks Done</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-value" id="metric-focus-time">75m</div>
+            <div class="metric-label">Focus Logged</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-value" id="metric-water-intake" style="color: var(--accent-blue);">5/8</div>
+            <div class="metric-label">Glasses Water</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs-navigation">
+      <button class="tab-btn active" data-tab="schedule">
+        ⏱ 24H Schedule
+      </button>
+      <button class="tab-btn" data-tab="matrix">
+        🪐 Gravity Fields (Matrix)
+      </button>
+      <button class="tab-btn" data-tab="focus">
+        🎯 Focus Orb & Audio
+      </button>
+      <button class="tab-btn" data-tab="fitness">
+        ⚡ Gym & Hydration
+      </button>
+      <button class="tab-btn" data-tab="notifications">
+        📱 Phone Simulator & SMS
+      </button>
+    </nav>
+
+    <!-- ===================================================================
+         Tab 1: 24-Hour Schedule Builder
+         =================================================================== -->
+    <main id="tab-schedule" class="tab-content active">
+      <div class="glass-card">
+        <!-- Quick Preset Inserts -->
+        <div class="schedule-presets">
+          <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">QUICK INSERTS:</span>
+          <button class="preset-chip" data-preset="work">
+            <span>💻</span> + Work Deep-Dive (90m)
+          </button>
+          <button class="preset-chip" data-preset="gym">
+            <span>🏋️</span> + Gym Protocol (60m)
+          </button>
+          <button class="preset-chip" data-preset="meal">
+            <span>🥗</span> + Meal & Fuel (45m)
+          </button>
+          <button class="preset-chip" data-preset="nap">
+            <span>⚡</span> + Power-Nap (25m)
+          </button>
+          <button class="btn btn-purple btn-sm" id="btn-ai-generate-schedule" style="margin-left: auto;">
+            ✨ AI Auto-Plan Day
+          </button>
+          <button class="btn btn-primary btn-sm" id="btn-open-add-task">
+            + Custom Time Block
+          </button>
+        </div>
+
+        <!-- Filter Pills -->
+        <div class="quadrant-filter-pills">
+          <button class="split-pill filter-pill active" data-filter="all">All 24 Hours</button>
+          <button class="split-pill filter-pill" data-filter="morning">🌅 Morning (06-12)</button>
+          <button class="split-pill filter-pill" data-filter="afternoon">☀️ Afternoon (12-17)</button>
+          <button class="split-pill filter-pill" data-filter="evening">🌇 Evening (17-21)</button>
+          <button class="split-pill filter-pill" data-filter="night">🌙 Night (21-06)</button>
+        </div>
+
+        <!-- Morning Block Section -->
+        <div class="time-block-section" id="sec-morning">
+          <div class="time-block-header">
+            <h4>🌅 Morning Orbit <span style="font-weight: 400; color: var(--text-dim);">(Prime Focus & High Willpower)</span></h4>
+            <span class="time-range">06:00 - 12:00</span>
+          </div>
+          <div class="task-list" id="tasks-morning"></div>
+        </div>
+
+        <!-- Afternoon Block Section -->
+        <div class="time-block-section" id="sec-afternoon">
+          <div class="time-block-header">
+            <h4>☀️ Afternoon Orbit <span style="font-weight: 400; color: var(--text-dim);">(Execution & Collaboration)</span></h4>
+            <span class="time-range">12:00 - 17:00</span>
+          </div>
+          <div class="task-list" id="tasks-afternoon"></div>
+        </div>
+
+        <!-- Evening Block Section -->
+        <div class="time-block-section" id="sec-evening">
+          <div class="time-block-header">
+            <h4>🌇 Evening Orbit <span style="font-weight: 400; color: var(--text-dim);">(Recovery, Gym & Family)</span></h4>
+            <span class="time-range">17:00 - 21:00</span>
+          </div>
+          <div class="task-list" id="tasks-evening"></div>
+        </div>
+
+        <!-- Night Block Section -->
+        <div class="time-block-section" id="sec-night">
+          <div class="time-block-header">
+            <h4>🌙 Night Deorbit <span style="font-weight: 400; color: var(--text-dim);">(Deep Rest & Regeneration)</span></h4>
+            <span class="time-range">21:00 - 06:00</span>
+          </div>
+          <div class="task-list" id="tasks-night"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ===================================================================
+         Tab 2: Gravity Fields (Eisenhower Matrix)
+         =================================================================== -->
+    <main id="tab-matrix" class="tab-content">
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+        <button class="btn btn-purple btn-sm" id="btn-ai-sort-matrix">
+          ✨ AI Sort Matrix (Gemini)
+        </button>
+      </div>
+      <div class="matrix-grid">
+        <!-- Q1: Zero Gravity -->
+        <div class="glass-card matrix-quadrant q1-border">
+          <div class="quadrant-header">
+            <div class="quadrant-title" style="color: var(--accent-cyan);">
+              <span>🚀</span> Zero Gravity (Urgent & Important)
+            </div>
+            <button class="btn btn-glass btn-sm btn-add-matrix-task" data-quadrant="q1">+ Task</button>
+          </div>
+          <div class="quadrant-tasks" id="matrix-tasks-q1"></div>
+          <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.75rem;" id="count-q1">0 items</div>
+        </div>
+
+        <!-- Q2: Low Gravity -->
+        <div class="glass-card matrix-quadrant q2-border">
+          <div class="quadrant-header">
+            <div class="quadrant-title" style="color: var(--accent-purple);">
+              <span>🪐</span> Low Gravity (Important, Not Urgent)
+            </div>
+            <button class="btn btn-glass btn-sm btn-add-matrix-task" data-quadrant="q2">+ Task</button>
+          </div>
+          <div class="quadrant-tasks" id="matrix-tasks-q2"></div>
+          <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.75rem;" id="count-q2">0 items</div>
+        </div>
+
+        <!-- Q3: High Mass -->
+        <div class="glass-card matrix-quadrant q3-border">
+          <div class="quadrant-header">
+            <div class="quadrant-title" style="color: var(--accent-amber);">
+              <span>☄️</span> High Mass (Urgent, Not Important)
+            </div>
+            <button class="btn btn-glass btn-sm btn-add-matrix-task" data-quadrant="q3">+ Task</button>
+          </div>
+          <div class="quadrant-tasks" id="matrix-tasks-q3"></div>
+          <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.75rem;" id="count-q3">0 items</div>
+        </div>
+
+        <!-- Q4: Deep Space -->
+        <div class="glass-card matrix-quadrant q4-border">
+          <div class="quadrant-header">
+            <div class="quadrant-title" style="color: var(--text-dim);">
+              <span>🌌</span> Deep Space (Drop / Deorbit)
+            </div>
+            <button class="btn btn-glass btn-sm btn-add-matrix-task" data-quadrant="q4">+ Task</button>
+          </div>
+          <div class="quadrant-tasks" id="matrix-tasks-q4"></div>
+          <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 0.75rem;" id="count-q4">0 items</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ===================================================================
+         Tab 3: Focus Orb & Soundscapes (Pomodoro Engine)
+         =================================================================== -->
+    <main id="tab-focus" class="tab-content">
+      <div class="glass-card">
+        <div class="focus-container">
+          <!-- Circular Glowing Orb -->
+          <div class="orb-display-wrapper">
+            <div class="focus-orb">
+              <svg class="orb-svg" viewBox="0 0 240 240">
+                <defs>
+                  <linearGradient id="cyanPurpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#00F5D4" />
+                    <stop offset="100%" stop-color="#9D4EDD" />
+                  </linearGradient>
+                </defs>
+                <circle class="orb-bg-circle" cx="120" cy="120" r="110" />
+                <circle id="orb-progress" class="orb-progress-circle" cx="120" cy="120" r="110" />
+              </svg>
+              <div class="orb-center-content">
+                <span class="orb-mode-label" id="focus-orb-mode">FOCUS ORBIT</span>
+                <span class="orb-time" id="focus-orb-time">25:00</span>
+              </div>
+            </div>
+
+            <div class="orb-controls">
+              <button class="btn btn-primary" id="btn-focus-toggle">Start Focus</button>
+              <button class="btn btn-glass" id="btn-focus-reset">Reset</button>
+            </div>
+
+            <div class="orb-presets">
+              <button class="split-pill focus-preset-btn active" data-mode="focus" data-minutes="25">25m Focus</button>
+              <button class="split-pill focus-preset-btn" data-mode="focus" data-minutes="50">50m Sprint</button>
+              <button class="split-pill focus-preset-btn" data-mode="short-break" data-minutes="5">5m Break</button>
+              <button class="split-pill focus-preset-btn" data-mode="long-break" data-minutes="15">15m Recharge</button>
+            </div>
+          </div>
+
+          <!-- Soundscapes Synthesizer Panel -->
+          <div class="soundscape-panel">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">
+              AntiGravity Soundscapes
+            </h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">
+              Pure Web Audio harmonic synthesizers designed to increase dopamine and eliminate distractions.
+            </p>
+
+            <!-- 40Hz Gamma Card -->
+            <div class="sound-toggle-card" id="card-binaural">
+              <div>
+                <strong style="color: var(--accent-cyan); display: flex; align-items: center; gap: 0.4rem;">
+                  🧠 40 Hz Gamma Focus Tone
+                </strong>
+                <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem;">
+                  Stereo sine modulation for memory recall and laser concentration.
+                </p>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div class="sound-wave-bars">
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                </div>
+                <button class="btn btn-glass btn-sm" id="btn-toggle-binaural">40Hz Gamma: OFF</button>
+              </div>
+            </div>
+
+            <!-- Deep Space Drone Card -->
+            <div class="sound-toggle-card" id="card-drone">
+              <div>
+                <strong style="color: var(--accent-purple); display: flex; align-items: center; gap: 0.4rem;">
+                  🌌 Ambient Deep Space Drone
+                </strong>
+                <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem;">
+                  Low-frequency cosmic resonance with warm analog filter sweep.
+                </p>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div class="sound-wave-bars">
+                  <div class="wave-bar" style="background: var(--accent-purple);"></div>
+                  <div class="wave-bar" style="background: var(--accent-purple);"></div>
+                  <div class="wave-bar" style="background: var(--accent-purple);"></div>
+                  <div class="wave-bar" style="background: var(--accent-purple);"></div>
+                  <div class="wave-bar" style="background: var(--accent-purple);"></div>
+                </div>
+                <button class="btn btn-glass btn-sm" id="btn-toggle-drone">Space Drone: OFF</button>
+              </div>
+            </div>
+
+            <!-- Volume Slider -->
+            <div>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Synthesizer Master Output</span>
+              <div class="volume-slider-wrap">
+                <span>🔈</span>
+                <input type="range" class="slider-input" id="sound-volume-slider" min="0" max="1" step="0.05" value="0.5">
+                <span>🔊</span>
+              </div>
+            </div>
+
+            <!-- Focus Stats -->
+            <div style="display: flex; gap: 1rem; border-top: 1px solid var(--border-glass); padding-top: 1rem; margin-top: 0.5rem;">
+              <div>
+                <span style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase;">Today's Deep Work</span>
+                <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-cyan);" id="stat-focus-minutes">75m</div>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase;">Rounds Concluded</span>
+                <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-main);" id="stat-focus-sessions">3 rounds</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ===================================================================
+         Tab 4: Gym & Fitness Time Sync
+         =================================================================== -->
+    <main id="tab-fitness" class="tab-content">
+      <div class="fitness-grid">
+        <!-- Workout Protocol -->
+        <div class="glass-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700;">🏋️ Daily Hypertrophy Protocol</h3>
+            <button class="btn btn-primary btn-sm" id="btn-add-exercise">+ Exercise</button>
+          </div>
+
+          <!-- Split Selector -->
+          <div class="split-selector">
+            <button class="split-pill active" data-split="push">Push Day (Chest/Delts/Tri)</button>
+            <button class="split-pill" data-split="pull">Pull Day (Back/Biceps)</button>
+            <button class="split-pill" data-split="legs">Leg Day (Quads/Hams)</button>
+            <button class="split-pill" data-split="cardio">Cardio & Core</button>
+          </div>
+
+          <!-- Exercises List -->
+          <div class="task-list" id="fitness-exercise-list"></div>
+
+          <!-- Rest Timer Box -->
+          <div class="rest-timer-box">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem;">
+              Set Rest Countdown
+            </div>
+            <div class="rest-display" id="rest-timer-display">01:00</div>
+            <div style="display: flex; justify-content: center; gap: 0.5rem; margin: 0.85rem 0;">
+              <button class="split-pill rest-preset-btn" data-seconds="30">30s</button>
+              <button class="split-pill rest-preset-btn" data-seconds="60">60s</button>
+              <button class="split-pill rest-preset-btn" data-seconds="90">90s</button>
+              <button class="split-pill rest-preset-btn" data-seconds="120">120s</button>
+            </div>
+            <div style="display: flex; justify-content: center; gap: 0.65rem;">
+              <button class="btn btn-primary btn-sm" id="btn-start-rest">Start Rest</button>
+              <button class="btn btn-glass btn-sm" id="btn-reset-rest">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hydration & Fuel Tracker -->
+        <div class="glass-card water-tracker-card">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 style="font-size: 1.1rem; font-weight: 700;">💧 Hydration Orbit Tracker</h3>
+              <span id="water-status-text" style="font-size: 0.78rem; color: var(--accent-blue); font-weight: 600;">
+                1,250 ml of 2,000 ml (63%)
+              </span>
+            </div>
+            <p style="font-size: 0.78rem; color: var(--text-dim); margin-top: 0.35rem;">
+              Click each glass to log 250ml of water. Maintain cellular hydration for peak cognitive stamina.
+            </p>
+
+            <!-- 8 Glass Grid -->
+            <div class="glasses-grid" id="water-glasses-grid"></div>
+          </div>
+
+          <div style="background: rgba(0, 180, 216, 0.08); border: 1px solid rgba(0, 180, 216, 0.2); border-radius: var(--radius-md); padding: 1rem; margin-top: 1rem;">
+            <strong style="color: var(--accent-cyan); font-size: 0.82rem; display: block; margin-bottom: 0.25rem;">
+              💡 ZeroGravity Nutrition Rule:
+            </strong>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">
+              Hydrate 500ml upon waking before coffee. Drink 1 glass of water after every 50-minute deep work block.
+            </span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ===================================================================
+         Tab 5: Phone Message & SMS Dispatch Simulator
+         =================================================================== -->
+    <main id="tab-notifications" class="tab-content">
+      <div class="simulator-layout">
+        <!-- Controls & Dispatcher Panel -->
+        <div class="glass-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <h3 style="font-size: 1.15rem; font-weight: 700;">
+              📱 Phone Message & Notification Center
+            </h3>
+            <button class="btn btn-primary btn-sm" id="btn-request-browser-notif">
+              🔔 Enable Real Push Alerts
+            </button>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            Test and simulate automated AntiGravity notifications on your phone or send instant digests straight to WhatsApp & Telegram.
+          </p>
+
+          <!-- Quick Dispatches -->
+          <div style="margin-bottom: 1.5rem;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">
+              Simulate Automated Trigger:
+            </span>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+              <button class="btn btn-glass btn-sm btn-dispatch-preset" data-type="morning">🌅 Morning Ignition Alert</button>
+              <button class="btn btn-glass btn-sm btn-dispatch-preset" data-type="gym">⚡ Gym Reminder</button>
+              <button class="btn btn-glass btn-sm btn-dispatch-preset" data-type="focus">🎯 Focus Sprint Ping</button>
+              <button class="btn btn-glass btn-sm btn-dispatch-preset" data-type="review">🌙 Daily Review</button>
+              <button class="btn btn-purple btn-sm" id="btn-ai-draft-notif" type="button">✨ AI Draft Notification</button>
+            </div>
+          </div>
+
+          <!-- Custom Dispatch Form -->
+          <form id="form-custom-dispatch" style="border-top: 1px solid var(--border-glass); padding-top: 1.25rem;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">
+              Dispatch Custom Phone Notification:
+            </span>
+            <div style="margin-top: 0.75rem;">
+              <input type="text" class="input-field" id="input-dispatch-title" placeholder="Message Title (e.g. Deep Work Session)" required>
+              <textarea class="input-field" id="input-dispatch-body" rows="2" placeholder="Message Body (e.g. Put your phone in DND and open VS Code)" required></textarea>
+              <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <select class="input-field" id="select-dispatch-delay" style="margin-bottom: 0; width: 180px;">
+                  <option value="0">Deliver: Instantly</option>
+                  <option value="5">Deliver in: 5 Seconds</option>
+                  <option value="15">Deliver in: 15 Seconds</option>
+                </select>
+                <button type="submit" class="btn btn-primary" style="flex: 1;">
+                  🚀 Dispatch to Phone
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- 1-Click WhatsApp & Telegram Share -->
+          <div style="border-top: 1px solid var(--border-glass); padding-top: 1.25rem; margin-top: 1.25rem;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">
+              Direct Phone Messenger Sync:
+            </span>
+            <div style="display: flex; gap: 0.65rem; margin-top: 0.65rem; flex-wrap: wrap;">
+              <button class="btn btn-glass btn-sm" id="btn-share-whatsapp" style="color: #25D366; border-color: rgba(37, 211, 102, 0.3);">
+                💬 Send to WhatsApp
+              </button>
+              <button class="btn btn-glass btn-sm" id="btn-share-telegram" style="color: #0088CC; border-color: rgba(0, 136, 204, 0.3);">
+                ✈️ Send to Telegram
+              </button>
+              <button class="btn btn-glass btn-sm" id="btn-copy-digest">
+                📋 Copy Daily Digest
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulated Smartphone Frame -->
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            <div class="phone-island"></div>
+            <div class="phone-lock-time">
+              <div class="phone-clock-text" id="phone-mockup-clock">15:58</div>
+              <div class="phone-date-text">AntiGravity OS • Live Sync</div>
+            </div>
+            <!-- Notification list on phone -->
+            <div class="phone-notifications-stack" id="phone-notifications-list"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Modal: Add Custom Schedule Task -->
+  <div class="modal-overlay" id="modal-add-task">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3 style="font-size: 1.1rem; font-weight: 700;">+ Add Schedule Time Block</h3>
+        <button class="icon-btn modal-close">✕</button>
+      </div>
+      <form id="form-add-task">
+        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Task Title</label>
+        <input type="text" class="input-field" id="task-input-title" placeholder="e.g. Core System Refactoring" required>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Start Time (HH:MM)</label>
+            <input type="time" class="input-field" id="task-input-time" value="09:00" required>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Duration (Minutes)</label>
+            <input type="number" class="input-field" id="task-input-duration" value="60" min="5" max="360" required>
+          </div>
+        </div>
+
+        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Category</label>
+        <select class="input-field" id="task-input-category">
+          <option value="work">Deep Work</option>
+          <option value="gym">Gym & Fitness</option>
+          <option value="health">Health & Nutrition</option>
+          <option value="rest">Recovery & Rest</option>
+        </select>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem;">
+          <button type="button" class="btn btn-glass modal-close">Cancel</button>
+          <button type="submit" class="btn btn-primary">Schedule Block</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Google AI Studio Gemini API Key -->
+  <div class="modal-overlay" id="modal-gemini-settings">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--accent-cyan);">✨ Google AI Studio (Gemini) Settings</h3>
+        <button class="icon-btn modal-close">✕</button>
+      </div>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
+        Power your planner with free Gemini 1.5 Flash AI! Your API key is stored securely on your device (Client-Side localStorage) and never shared.
+      </p>
+      <form id="form-gemini-key">
+        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem;">Gemini API Key</label>
+        <input type="password" class="input-field" id="input-gemini-api-key" placeholder="AIzaSy..." required>
+        <div style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 1.25rem;">
+          Don't have an API key? <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--accent-cyan); text-decoration: underline;">Get free Gemini API key at Google AI Studio &rarr;</a>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-glass modal-close">Close</button>
+          <button type="submit" class="btn btn-primary">Save & Connect</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Modular Scripts in Topological Order -->
+  <script src="js/particles.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/schedule.js"></script>
+  <script src="js/matrix.js"></script>
+  <script src="js/fitness.js"></script>
+  <script src="js/focus.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/gemini.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
