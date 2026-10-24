@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,7 +6,1163 @@
   <title>SK ZeroGravity Daily Planner | Stitch UI Production</title>
   <meta name="theme-color" content="#08090F">
   <meta name="description" content="Production-ready 24-hour time management web application with Anti-Gravity physics, Eisenhower Matrix, Focus Orb, Gym Sync, and Phone Dispatch Simulator.">
-  <link rel="stylesheet" href="css/style.css">
+  <style>
+/* ===================================================================
+   SK ZeroGravity Daily Planner - Core Design System & Glassmorphism
+   Theme: Deep Space Dark Mode, Cyan & Violet Accents, Glassmorphic HUD
+   =================================================================== */
+
+:root {
+  --bg-primary: #08090F;
+  --bg-secondary: #0D111E;
+  --bg-card: rgba(15, 20, 36, 0.72);
+  --bg-card-hover: rgba(22, 29, 52, 0.85);
+  --bg-glass-input: rgba(10, 14, 26, 0.6);
+  
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(0, 245, 212, 0.3);
+  --border-purple-glow: rgba(157, 78, 221, 0.3);
+
+  --accent-cyan: #00F5D4;
+  --accent-blue: #00B4D8;
+  --accent-purple: #9D4EDD;
+  --accent-magenta: #F72585;
+  --accent-amber: #FFB703;
+  --accent-green: #38B000;
+  --accent-red: #E63946;
+
+  --text-main: #F8FAFC;
+  --text-muted: #94A3B8;
+  --text-dim: #64748B;
+  
+  --glow-cyan: 0 0 20px rgba(0, 245, 212, 0.35);
+  --glow-purple: 0 0 20px rgba(157, 78, 221, 0.35);
+  --glow-amber: 0 0 20px rgba(255, 183, 3, 0.35);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  --transition-fast: 0.18s ease;
+  --transition-normal: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Space Grotesk", Inter, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  line-height: 1.5;
+}
+
+/* Background Particle Canvas */
+#anti-gravity-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: auto;
+}
+
+/* App Wrapper */
+.app-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem 3rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Top Navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.5rem;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  position: sticky;
+  top: 1rem;
+  z-index: 50;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brand-logo-orb {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, var(--accent-cyan), var(--accent-purple));
+  box-shadow: var(--glow-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  animation: floatOrb 4s ease-in-out infinite alternate;
+}
+
+@keyframes floatOrb {
+  0% { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-4px) rotate(8deg); }
+}
+
+.brand-title-wrap h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(120deg, #FFFFFF, var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-title-wrap .subtitle {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Soundscapes Widget in Nav */
+.soundscape-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-glass);
+}
+
+.sound-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-full);
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sound-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sound-btn.active {
+  background: rgba(0, 245, 212, 0.18);
+  color: var(--accent-cyan);
+  border: 1px solid var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(0, 245, 212, 0.25);
+}
+
+/* Base Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-normal);
+  border: 1px solid transparent;
+  outline: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-cyan), #00B4D8);
+  color: #08090F;
+  box-shadow: var(--glow-cyan);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(0, 245, 212, 0.6);
+}
+
+.btn-purple {
+  background: linear-gradient(135deg, var(--accent-purple), #7209B7);
+  color: #FFFFFF;
+  box-shadow: var(--glow-purple);
+}
+
+.btn-purple:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(157, 78, 221, 0.6);
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-glass);
+  color: var(--text-main);
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-sm {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+}
+
+/* HUD Banner */
+.hud-banner {
+  display: grid;
+  grid-template-columns: 1.2fr 2fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 980px) {
+  .hud-banner {
+    grid-template-columns: 1fr;
+  }
+}
+
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition-normal);
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Glowing top borders */
+.glow-cyan-top::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+}
+
+.glow-purple-top::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-purple), transparent);
+}
+
+/* Time & Orbit Status Card */
+.time-display-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.time-clock {
+  font-size: 2.25rem;
+  font-weight: 700;
+  font-family: monospace;
+  letter-spacing: 0.05em;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 12px rgba(0, 245, 212, 0.4);
+}
+
+.date-stamp {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.orbit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  background: rgba(0, 245, 212, 0.1);
+  border: 1px solid rgba(0, 245, 212, 0.3);
+  border-radius: var(--radius-full);
+  color: var(--accent-cyan);
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: fit-content;
+  margin-top: 0.5rem;
+}
+
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  background-color: var(--accent-cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent-cyan);
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+/* Daily Balance Meter */
+.balance-card h3 {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.balance-progress-bar {
+  display: flex;
+  height: 14px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  margin-bottom: 0.85rem;
+  border: 1px solid var(--border-glass);
+}
+
+.bar-segment {
+  height: 100%;
+  transition: width 0.5s ease;
+}
+
+.bar-deep-work { background: linear-gradient(90deg, #00F5D4, #00B4D8); }
+.bar-gym { background: linear-gradient(90deg, #FFB703, #FB8500); }
+.bar-rest { background: linear-gradient(90deg, #9D4EDD, #7209B7); }
+.bar-routine { background: linear-gradient(90deg, #4CC9F0, #4361EE); }
+
+.balance-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.legend-color {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+
+/* Quick Metrics Card */
+.metrics-row {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  height: 100%;
+  align-items: center;
+}
+
+.metric-box .metric-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.metric-box .metric-label {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+
+/* Navigation Tabs */
+.tabs-navigation {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(12, 16, 28, 0.7);
+  padding: 0.4rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-glass);
+  overflow-x: auto;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-normal);
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-btn.active {
+  background: var(--bg-card-hover);
+  color: var(--accent-cyan);
+  border: 1px solid var(--border-glow);
+  box-shadow: 0 4px 15px rgba(0, 245, 212, 0.15);
+}
+
+/* Tab Views Container */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===================================================================
+   Tab 1: 24-Hour Schedule Builder
+   =================================================================== */
+.schedule-presets {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  align-items: center;
+}
+
+.preset-chip {
+  padding: 0.45rem 0.85rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-full);
+  color: var(--text-main);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.preset-chip:hover {
+  background: rgba(0, 245, 212, 0.1);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+
+.quadrant-filter-pills {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.time-block-section {
+  margin-bottom: 1.5rem;
+}
+
+.time-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-glass);
+  margin-bottom: 0.85rem;
+}
+
+.time-block-header h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-main);
+}
+
+.time-block-header .time-range {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.task-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  background: rgba(18, 23, 40, 0.5);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  transition: var(--transition-normal);
+}
+
+.task-card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(24, 31, 54, 0.65);
+  transform: translateX(3px);
+}
+
+.task-card.completed {
+  opacity: 0.55;
+}
+
+.task-card.completed .task-title {
+  text-decoration: line-through;
+  color: var(--text-dim);
+}
+
+.task-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex: 1;
+}
+
+.custom-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 2px solid var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.custom-checkbox.checked {
+  background: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  color: #08090F;
+}
+
+.task-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.task-details {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-top: 0.15rem;
+}
+
+.tag-badge {
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.tag-work { background: rgba(0, 245, 212, 0.15); color: var(--accent-cyan); }
+.tag-gym { background: rgba(255, 183, 3, 0.15); color: var(--accent-amber); }
+.tag-health { background: rgba(56, 176, 0, 0.15); color: var(--accent-green); }
+.tag-rest { background: rgba(157, 78, 221, 0.15); color: var(--accent-purple); }
+
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 0.35rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+}
+
+.icon-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.icon-btn.delete:hover {
+  color: var(--accent-red);
+}
+
+/* ===================================================================
+   Tab 2: Gravity Fields (Eisenhower Matrix)
+   =================================================================== */
+.matrix-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 850px) {
+  .matrix-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.matrix-quadrant {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.quadrant-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.quadrant-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.q1-border { border-left: 3px solid var(--accent-cyan); }
+.q2-border { border-left: 3px solid var(--accent-purple); }
+.q3-border { border-left: 3px solid var(--accent-amber); }
+.q4-border { border-left: 3px solid var(--text-dim); }
+
+.quadrant-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+/* ===================================================================
+   Tab 3: Focus Orb & Soundscapes (Pomodoro)
+   =================================================================== */
+.focus-container {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+@media (max-width: 850px) {
+  .focus-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.orb-display-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.focus-orb {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orb-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.orb-bg-circle {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 8;
+}
+
+.orb-progress-circle {
+  fill: none;
+  stroke: url(#cyanPurpleGrad);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 691;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s ease;
+  filter: drop-shadow(0 0 10px rgba(0, 245, 212, 0.6));
+}
+
+.orb-center-content {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.orb-time {
+  font-size: 3rem;
+  font-weight: 800;
+  font-family: monospace;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.orb-mode-label {
+  font-size: 0.8rem;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.orb-controls {
+  display: flex;
+  gap: 0.85rem;
+  margin-top: 1.5rem;
+}
+
+.orb-presets {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Soundscapes Panel */
+.soundscape-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sound-toggle-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: rgba(10, 14, 25, 0.5);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  transition: var(--transition-fast);
+}
+
+.sound-toggle-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.volume-slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.slider-input {
+  flex: 1;
+  accent-color: var(--accent-cyan);
+  height: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+}
+
+/* Sound visualizer wave */
+.sound-wave-bars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+}
+
+.wave-bar {
+  width: 3px;
+  height: 4px;
+  background: var(--accent-cyan);
+  border-radius: 2px;
+  transition: height 0.1s ease;
+}
+
+.sound-active .wave-bar {
+  animation: wavePulse 1s ease-in-out infinite alternate;
+}
+
+.sound-active .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+.sound-active .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+.sound-active .wave-bar:nth-child(4) { animation-delay: 0.45s; }
+.sound-active .wave-bar:nth-child(5) { animation-delay: 0.6s; }
+
+@keyframes wavePulse {
+  0% { height: 4px; }
+  100% { height: 18px; }
+}
+
+/* ===================================================================
+   Tab 4: Gym & Fitness Time Sync
+   =================================================================== */
+.fitness-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 850px) {
+  .fitness-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.split-selector {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.split-pill {
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-glass);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.split-pill.active {
+  background: rgba(255, 183, 3, 0.15);
+  border-color: var(--accent-amber);
+  color: var(--accent-amber);
+  box-shadow: 0 0 15px rgba(255, 183, 3, 0.2);
+}
+
+.rest-timer-box {
+  background: rgba(10, 14, 25, 0.6);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  text-align: center;
+  margin-top: 1.25rem;
+}
+
+.rest-display {
+  font-size: 2.5rem;
+  font-weight: 700;
+  font-family: monospace;
+  color: var(--accent-amber);
+}
+
+/* Hydration 8-Glass Tracker */
+.water-tracker-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.glasses-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+
+.water-glass-btn {
+  height: 65px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  color: var(--text-dim);
+  transition: var(--transition-normal);
+}
+
+.water-glass-btn.filled {
+  background: rgba(0, 180, 216, 0.25);
+  border-color: #00B4D8;
+  color: #00B4D8;
+  box-shadow: 0 0 15px rgba(0, 180, 216, 0.3);
+}
+
+.water-glass-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* ===================================================================
+   Tab 5: Phone Message & SMS Dispatch Simulator
+   =================================================================== */
+.simulator-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .simulator-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Simulated Smartphone Mockup */
+.phone-mockup {
+  width: 320px;
+  height: 600px;
+  background: #000000;
+  border-radius: 42px;
+  border: 4px solid #2A2F45;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 35px rgba(0, 245, 212, 0.15);
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-screen {
+  flex: 1;
+  background: radial-gradient(circle at 50% 20%, #151A30, #080A14);
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  position: relative;
+}
+
+.phone-island {
+  width: 90px;
+  height: 20px;
+  background: #000;
+  border-radius: 20px;
+  margin: 0 auto 0.5rem auto;
+  z-index: 10;
+}
+
+.phone-lock-time {
+  text-align: center;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.phone-clock-text {
+  font-size: 2.8rem;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  color: #FFFFFF;
+}
+
+.phone-date-text {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.phone-notifications-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.25rem 0.1rem;
+}
+
+.phone-notif-card {
+  background: rgba(30, 36, 58, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 0.75rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  animation: slideInNotif 0.35s ease;
+}
+
+@keyframes slideInNotif {
+  from { opacity: 0; transform: translateY(-10px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.notif-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.notif-app-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+}
+
+.notif-body {
+  font-size: 0.78rem;
+  color: #FFFFFF;
+  line-height: 1.35;
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 500px;
+  padding: 1.75rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  transform: translateY(20px);
+  transition: transform 0.2s ease;
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0);
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  background: var(--bg-glass-input);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  font-size: 0.88rem;
+  outline: none;
+  margin-bottom: 0.85rem;
+}
+
+.input-field:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(0, 245, 212, 0.25);
+}
+
+/* Toast Messages */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.toast {
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: rgba(15, 20, 36, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--accent-cyan);
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  box-shadow: var(--glow-cyan);
+  animation: slideToast 0.3s ease;
+  pointer-events: auto;
+}
+
+@keyframes slideToast {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+</style>
 </head>
 <body>
 
@@ -19,10 +1175,10 @@
     <!-- Top Sticky Navigation Bar -->
     <header class="navbar">
       <div class="brand-section">
-        <div class="brand-logo-orb">🪐</div>
+        <div class="brand-logo-orb">ðŸª</div>
         <div class="brand-title-wrap">
           <h1>SK ZeroGravity</h1>
-          <span class="subtitle">Daily Planner • Stitch UI #4972856916003344066</span>
+          <span class="subtitle">Daily Planner â€¢ Stitch UI #4972856916003344066</span>
         </div>
       </div>
 
@@ -30,27 +1186,27 @@
         <!-- Soundscapes Quick Toggles -->
         <div class="soundscape-pill">
           <button id="nav-toggle-binaural" class="sound-btn" title="Toggle 40Hz Gamma Binaural Beats">
-            🧠 40Hz
+            ðŸ§  40Hz
           </button>
           <button id="nav-toggle-drone" class="sound-btn" title="Toggle Ambient Space Drone">
-            🌌 Drone
+            ðŸŒŒ Drone
           </button>
         </div>
 
         <button class="btn btn-glass btn-sm" id="btn-open-gemini-modal" onclick="window.app.openModal('modal-gemini-settings')" title="Configure Google AI Studio (Gemini) API Key">
-          ✨ <span id="ai-status-indicator">AI Assistant</span>
+          âœ¨ <span id="ai-status-indicator">AI Assistant</span>
         </button>
 
         <button class="btn btn-glass btn-sm" id="btn-export-json" title="Download backup of your schedule & matrix">
-          📥 Backup JSON
+          ðŸ“¥ Backup JSON
         </button>
 
         <button class="btn btn-glass btn-sm" id="btn-reset-blueprint" title="Reset to original blueprint data">
-          ↺ Reset
+          â†º Reset
         </button>
 
         <button class="btn btn-primary btn-sm" onclick="window.app.switchTab('notifications')">
-          📱 Phone Alerts
+          ðŸ“± Phone Alerts
         </button>
       </div>
     </header>
@@ -111,19 +1267,19 @@
     <!-- Navigation Tabs -->
     <nav class="tabs-navigation">
       <button class="tab-btn active" data-tab="schedule">
-        ⏱ 24H Schedule
+        â± 24H Schedule
       </button>
       <button class="tab-btn" data-tab="matrix">
-        🪐 Gravity Fields (Matrix)
+        ðŸª Gravity Fields (Matrix)
       </button>
       <button class="tab-btn" data-tab="focus">
-        🎯 Focus Orb & Audio
+        ðŸŽ¯ Focus Orb & Audio
       </button>
       <button class="tab-btn" data-tab="fitness">
-        ⚡ Gym & Hydration
+        âš¡ Gym & Hydration
       </button>
       <button class="tab-btn" data-tab="notifications">
-        📱 Phone Simulator & SMS
+        ðŸ“± Phone Simulator & SMS
       </button>
     </nav>
 
@@ -136,19 +1292,19 @@
         <div class="schedule-presets">
           <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">QUICK INSERTS:</span>
           <button class="preset-chip" data-preset="work">
-            <span>💻</span> + Work Deep-Dive (90m)
+            <span>ðŸ’»</span> + Work Deep-Dive (90m)
           </button>
           <button class="preset-chip" data-preset="gym">
-            <span>🏋️</span> + Gym Protocol (60m)
+            <span>ðŸ‹ï¸</span> + Gym Protocol (60m)
           </button>
           <button class="preset-chip" data-preset="meal">
-            <span>🥗</span> + Meal & Fuel (45m)
+            <span>ðŸ¥—</span> + Meal & Fuel (45m)
           </button>
           <button class="preset-chip" data-preset="nap">
-            <span>⚡</span> + Power-Nap (25m)
+            <span>âš¡</span> + Power-Nap (25m)
           </button>
           <button class="btn btn-purple btn-sm" id="btn-ai-generate-schedule" style="margin-left: auto;">
-            ✨ AI Auto-Plan Day
+            âœ¨ AI Auto-Plan Day
           </button>
           <button class="btn btn-primary btn-sm" id="btn-open-add-task">
             + Custom Time Block
@@ -158,16 +1314,16 @@
         <!-- Filter Pills -->
         <div class="quadrant-filter-pills">
           <button class="split-pill filter-pill active" data-filter="all">All 24 Hours</button>
-          <button class="split-pill filter-pill" data-filter="morning">🌅 Morning (06-12)</button>
-          <button class="split-pill filter-pill" data-filter="afternoon">☀️ Afternoon (12-17)</button>
-          <button class="split-pill filter-pill" data-filter="evening">🌇 Evening (17-21)</button>
-          <button class="split-pill filter-pill" data-filter="night">🌙 Night (21-06)</button>
+          <button class="split-pill filter-pill" data-filter="morning">ðŸŒ… Morning (06-12)</button>
+          <button class="split-pill filter-pill" data-filter="afternoon">â˜€ï¸ Afternoon (12-17)</button>
+          <button class="split-pill filter-pill" data-filter="evening">ðŸŒ‡ Evening (17-21)</button>
+          <button class="split-pill filter-pill" data-filter="night">ðŸŒ™ Night (21-06)</button>
         </div>
 
         <!-- Morning Block Section -->
         <div class="time-block-section" id="sec-morning">
           <div class="time-block-header">
-            <h4>🌅 Morning Orbit <span style="font-weight: 400; color: var(--text-dim);">(Prime Focus & High Willpower)</span></h4>
+            <h4>ðŸŒ… Morning Orbit <span style="font-weight: 400; color: var(--text-dim);">(Prime Focus & High Willpower)</span></h4>
             <span class="time-range">06:00 - 12:00</span>
           </div>
           <div class="task-list" id="tasks-morning"></div>
@@ -176,7 +1332,7 @@
         <!-- Afternoon Block Section -->
         <div class="time-block-section" id="sec-afternoon">
           <div class="time-block-header">
-            <h4>☀️ Afternoon Orbit <span style="font-weight: 400; color: var(--text-dim);">(Execution & Collaboration)</span></h4>
+            <h4>â˜€ï¸ Afternoon Orbit <span style="font-weight: 400; color: var(--text-dim);">(Execution & Collaboration)</span></h4>
             <span class="time-range">12:00 - 17:00</span>
           </div>
           <div class="task-list" id="tasks-afternoon"></div>
@@ -185,7 +1341,7 @@
         <!-- Evening Block Section -->
         <div class="time-block-section" id="sec-evening">
           <div class="time-block-header">
-            <h4>🌇 Evening Orbit <span style="font-weight: 400; color: var(--text-dim);">(Recovery, Gym & Family)</span></h4>
+            <h4>ðŸŒ‡ Evening Orbit <span style="font-weight: 400; color: var(--text-dim);">(Recovery, Gym & Family)</span></h4>
             <span class="time-range">17:00 - 21:00</span>
           </div>
           <div class="task-list" id="tasks-evening"></div>
@@ -194,7 +1350,7 @@
         <!-- Night Block Section -->
         <div class="time-block-section" id="sec-night">
           <div class="time-block-header">
-            <h4>🌙 Night Deorbit <span style="font-weight: 400; color: var(--text-dim);">(Deep Rest & Regeneration)</span></h4>
+            <h4>ðŸŒ™ Night Deorbit <span style="font-weight: 400; color: var(--text-dim);">(Deep Rest & Regeneration)</span></h4>
             <span class="time-range">21:00 - 06:00</span>
           </div>
           <div class="task-list" id="tasks-night"></div>
@@ -208,7 +1364,7 @@
     <main id="tab-matrix" class="tab-content">
       <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
         <button class="btn btn-purple btn-sm" id="btn-ai-sort-matrix">
-          ✨ AI Sort Matrix (Gemini)
+          âœ¨ AI Sort Matrix (Gemini)
         </button>
       </div>
       <div class="matrix-grid">
@@ -216,7 +1372,7 @@
         <div class="glass-card matrix-quadrant q1-border">
           <div class="quadrant-header">
             <div class="quadrant-title" style="color: var(--accent-cyan);">
-              <span>🚀</span> Zero Gravity (Urgent & Important)
+              <span>ðŸš€</span> Zero Gravity (Urgent & Important)
             </div>
             <button class="btn btn-glass btn-sm btn-add-matrix-task" data-quadrant="q1">+ Task</button>
           </div>
@@ -228,7 +1384,7 @@
         <div class="glass-card matrix-quadrant q2-border">
           <div class="quadrant-header">
             <div class="quadrant-title" style="color: var(--accent-purple);">
-              <span>🪐</span> Low Gravity (Important, Not Urgent)
+              <span>ðŸª</span> Low Gravity (Important, Not Urgent)
             </div>
             <button class="btn btn-glass btn-sm btn-add-matrix-task" data-quadrant="q2">+ Task</button>
           </div>
@@ -240,7 +1396,7 @@
         <div class="glass-card matrix-quadrant q3-border">
           <div class="quadrant-header">
             <div class="quadrant-title" style="color: var(--accent-amber);">
-              <span>☄️</span> High Mass (Urgent, Not Important)
+              <span>â˜„ï¸</span> High Mass (Urgent, Not Important)
             </div>
             <button class="btn btn-glass btn-sm btn-add-matrix-task" data-quadrant="q3">+ Task</button>
           </div>
@@ -252,7 +1408,7 @@
         <div class="glass-card matrix-quadrant q4-border">
           <div class="quadrant-header">
             <div class="quadrant-title" style="color: var(--text-dim);">
-              <span>🌌</span> Deep Space (Drop / Deorbit)
+              <span>ðŸŒŒ</span> Deep Space (Drop / Deorbit)
             </div>
             <button class="btn btn-glass btn-sm btn-add-matrix-task" data-quadrant="q4">+ Task</button>
           </div>
@@ -313,7 +1469,7 @@
             <div class="sound-toggle-card" id="card-binaural">
               <div>
                 <strong style="color: var(--accent-cyan); display: flex; align-items: center; gap: 0.4rem;">
-                  🧠 40 Hz Gamma Focus Tone
+                  ðŸ§  40 Hz Gamma Focus Tone
                 </strong>
                 <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem;">
                   Stereo sine modulation for memory recall and laser concentration.
@@ -335,7 +1491,7 @@
             <div class="sound-toggle-card" id="card-drone">
               <div>
                 <strong style="color: var(--accent-purple); display: flex; align-items: center; gap: 0.4rem;">
-                  🌌 Ambient Deep Space Drone
+                  ðŸŒŒ Ambient Deep Space Drone
                 </strong>
                 <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem;">
                   Low-frequency cosmic resonance with warm analog filter sweep.
@@ -357,9 +1513,9 @@
             <div>
               <span style="font-size: 0.75rem; color: var(--text-muted);">Synthesizer Master Output</span>
               <div class="volume-slider-wrap">
-                <span>🔈</span>
+                <span>ðŸ”ˆ</span>
                 <input type="range" class="slider-input" id="sound-volume-slider" min="0" max="1" step="0.05" value="0.5">
-                <span>🔊</span>
+                <span>ðŸ”Š</span>
               </div>
             </div>
 
@@ -387,7 +1543,7 @@
         <!-- Workout Protocol -->
         <div class="glass-card">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <h3 style="font-size: 1.1rem; font-weight: 700;">🏋️ Daily Hypertrophy Protocol</h3>
+            <h3 style="font-size: 1.1rem; font-weight: 700;">ðŸ‹ï¸ Daily Hypertrophy Protocol</h3>
             <button class="btn btn-primary btn-sm" id="btn-add-exercise">+ Exercise</button>
           </div>
 
@@ -425,7 +1581,7 @@
         <div class="glass-card water-tracker-card">
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <h3 style="font-size: 1.1rem; font-weight: 700;">💧 Hydration Orbit Tracker</h3>
+              <h3 style="font-size: 1.1rem; font-weight: 700;">ðŸ’§ Hydration Orbit Tracker</h3>
               <span id="water-status-text" style="font-size: 0.78rem; color: var(--accent-blue); font-weight: 600;">
                 1,250 ml of 2,000 ml (63%)
               </span>
@@ -440,7 +1596,7 @@
 
           <div style="background: rgba(0, 180, 216, 0.08); border: 1px solid rgba(0, 180, 216, 0.2); border-radius: var(--radius-md); padding: 1rem; margin-top: 1rem;">
             <strong style="color: var(--accent-cyan); font-size: 0.82rem; display: block; margin-bottom: 0.25rem;">
-              💡 ZeroGravity Nutrition Rule:
+              ðŸ’¡ ZeroGravity Nutrition Rule:
             </strong>
             <span style="font-size: 0.75rem; color: var(--text-muted);">
               Hydrate 500ml upon waking before coffee. Drink 1 glass of water after every 50-minute deep work block.
@@ -459,10 +1615,10 @@
         <div class="glass-card">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
             <h3 style="font-size: 1.15rem; font-weight: 700;">
-              📱 Phone Message & Notification Center
+              ðŸ“± Phone Message & Notification Center
             </h3>
             <button class="btn btn-primary btn-sm" id="btn-request-browser-notif">
-              🔔 Enable Real Push Alerts
+              ðŸ”” Enable Real Push Alerts
             </button>
           </div>
           <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">
@@ -475,11 +1631,11 @@
               Simulate Automated Trigger:
             </span>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
-              <button class="btn btn-glass btn-sm btn-dispatch-preset" data-type="morning">🌅 Morning Ignition Alert</button>
-              <button class="btn btn-glass btn-sm btn-dispatch-preset" data-type="gym">⚡ Gym Reminder</button>
-              <button class="btn btn-glass btn-sm btn-dispatch-preset" data-type="focus">🎯 Focus Sprint Ping</button>
-              <button class="btn btn-glass btn-sm btn-dispatch-preset" data-type="review">🌙 Daily Review</button>
-              <button class="btn btn-purple btn-sm" id="btn-ai-draft-notif" type="button">✨ AI Draft Notification</button>
+              <button class="btn btn-glass btn-sm btn-dispatch-preset" data-type="morning">ðŸŒ… Morning Ignition Alert</button>
+              <button class="btn btn-glass btn-sm btn-dispatch-preset" data-type="gym">âš¡ Gym Reminder</button>
+              <button class="btn btn-glass btn-sm btn-dispatch-preset" data-type="focus">ðŸŽ¯ Focus Sprint Ping</button>
+              <button class="btn btn-glass btn-sm btn-dispatch-preset" data-type="review">ðŸŒ™ Daily Review</button>
+              <button class="btn btn-purple btn-sm" id="btn-ai-draft-notif" type="button">âœ¨ AI Draft Notification</button>
             </div>
           </div>
 
@@ -498,7 +1654,7 @@
                   <option value="15">Deliver in: 15 Seconds</option>
                 </select>
                 <button type="submit" class="btn btn-primary" style="flex: 1;">
-                  🚀 Dispatch to Phone
+                  ðŸš€ Dispatch to Phone
                 </button>
               </div>
             </div>
@@ -511,13 +1667,13 @@
             </span>
             <div style="display: flex; gap: 0.65rem; margin-top: 0.65rem; flex-wrap: wrap;">
               <button class="btn btn-glass btn-sm" id="btn-share-whatsapp" style="color: #25D366; border-color: rgba(37, 211, 102, 0.3);">
-                💬 Send to WhatsApp
+                ðŸ’¬ Send to WhatsApp
               </button>
               <button class="btn btn-glass btn-sm" id="btn-share-telegram" style="color: #0088CC; border-color: rgba(0, 136, 204, 0.3);">
-                ✈️ Send to Telegram
+                âœˆï¸ Send to Telegram
               </button>
               <button class="btn btn-glass btn-sm" id="btn-copy-digest">
-                📋 Copy Daily Digest
+                ðŸ“‹ Copy Daily Digest
               </button>
             </div>
           </div>
@@ -529,7 +1685,7 @@
             <div class="phone-island"></div>
             <div class="phone-lock-time">
               <div class="phone-clock-text" id="phone-mockup-clock">15:58</div>
-              <div class="phone-date-text">AntiGravity OS • Live Sync</div>
+              <div class="phone-date-text">AntiGravity OS â€¢ Live Sync</div>
             </div>
             <!-- Notification list on phone -->
             <div class="phone-notifications-stack" id="phone-notifications-list"></div>
@@ -545,7 +1701,7 @@
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
         <h3 style="font-size: 1.1rem; font-weight: 700;">+ Add Schedule Time Block</h3>
-        <button class="icon-btn modal-close">✕</button>
+        <button class="icon-btn modal-close">âœ•</button>
       </div>
       <form id="form-add-task">
         <label style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Task Title</label>
@@ -582,8 +1738,8 @@
   <div class="modal-overlay" id="modal-gemini-settings">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--accent-cyan);">✨ Google AI Studio (Gemini) Settings</h3>
-        <button class="icon-btn modal-close">✕</button>
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--accent-cyan);">âœ¨ Google AI Studio (Gemini) Settings</h3>
+        <button class="icon-btn modal-close">âœ•</button>
       </div>
       <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
         Power your planner with free Gemini 1.5 Flash AI! Your API key is stored securely on your device (Client-Side localStorage) and never shared.
@@ -605,16 +1761,2092 @@
   <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- Modular Scripts in Topological Order -->
-  <script src="js/particles.js"></script>
-  <script src="js/audio.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/schedule.js"></script>
-  <script src="js/matrix.js"></script>
-  <script src="js/fitness.js"></script>
-  <script src="js/focus.js"></script>
-  <script src="js/notifications.js"></script>
-  <script src="js/gemini.js"></script>
-  <script src="js/app.js"></script>
+  <script>
+/**
+ * Anti-Gravity Particle Canvas Engine
+ * Simulates microgravity floating particles with interactive repulsion physics
+ */
+class AntiGravityCanvas {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    
+    this.particles = [];
+    this.particleCount = window.innerWidth < 768 ? 50 : 100;
+    this.mouse = { x: null, y: null, radius: 140, isHovering: false };
+    this.repulsionStrength = 0.8;
+    this.mode = 'zero-g'; // 'zero-g' or 'orbit'
+
+    this.init();
+    this.bindEvents();
+    this.animate = this.animate.bind(this);
+    requestAnimationFrame(this.animate);
+  }
+
+  init() {
+    this.resize();
+    this.particles = [];
+    for (let i = 0; i < this.particleCount; i++) {
+      this.particles.push(this.createParticle());
+    }
+  }
+
+  resize() {
+    this.width = this.canvas.width = window.innerWidth;
+    this.height = this.canvas.height = window.innerHeight;
+  }
+
+  createParticle() {
+    const isCyan = Math.random() > 0.4;
+    return {
+      x: Math.random() * this.width,
+      y: Math.random() * this.height,
+      vx: (Math.random() - 0.5) * 0.45,
+      vy: (Math.random() - 0.5) * 0.45,
+      radius: Math.random() * 2.2 + 0.8,
+      baseRadius: Math.random() * 2.2 + 0.8,
+      color: isCyan ? 'rgba(0, 245, 212, ' : 'rgba(157, 78, 221, ',
+      alpha: Math.random() * 0.5 + 0.25,
+      pulseSpeed: Math.random() * 0.02 + 0.005,
+      pulseAngle: Math.random() * Math.PI * 2
+    };
+  }
+
+  bindEvents() {
+    window.addEventListener('resize', () => {
+      this.resize();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      this.mouse.x = e.clientX;
+      this.mouse.y = e.clientY;
+      this.mouse.isHovering = true;
+    });
+
+    window.addEventListener('mouseleave', () => {
+      this.mouse.isHovering = false;
+      this.mouse.x = null;
+      this.mouse.y = null;
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        this.mouse.x = e.touches[0].clientX;
+        this.mouse.y = e.touches[0].clientY;
+        this.mouse.isHovering = true;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+      this.mouse.isHovering = false;
+      this.mouse.x = null;
+      this.mouse.y = null;
+    });
+  }
+
+  updateParticles() {
+    for (let i = 0; i < this.particles.length; i++) {
+      const p = this.particles[i];
+
+      // Pulse brightness
+      p.pulseAngle += p.pulseSpeed;
+      const currentAlpha = p.alpha + Math.sin(p.pulseAngle) * 0.15;
+
+      // Microgravity drift
+      p.x += p.vx;
+      p.y += p.vy;
+
+      // Interactive Anti-Gravity Repulsion from cursor
+      if (this.mouse.isHovering && this.mouse.x !== null) {
+        const dx = p.x - this.mouse.x;
+        const dy = p.y - this.mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < this.mouse.radius && dist > 0) {
+          const force = (1 - dist / this.mouse.radius) * this.repulsionStrength;
+          const normalX = dx / dist;
+          const normalY = dy / dist;
+
+          p.vx += normalX * force * 0.6;
+          p.vy += normalY * force * 0.6;
+        }
+      }
+
+      // Smooth velocity dampening back to zero-gravity float
+      p.vx *= 0.985;
+      p.vy *= 0.985;
+
+      // Ensure minimum drift
+      if (Math.abs(p.vx) < 0.1) p.vx += (Math.random() - 0.5) * 0.05;
+      if (Math.abs(p.vy) < 0.1) p.vy += (Math.random() - 0.5) * 0.05;
+
+      // Wrap around screen boundaries
+      if (p.x < -10) p.x = this.width + 10;
+      if (p.x > this.width + 10) p.x = -10;
+      if (p.y < -10) p.y = this.height + 10;
+      if (p.y > this.height + 10) p.y = -10;
+
+      p.renderedAlpha = Math.max(0.1, Math.min(1, currentAlpha));
+    }
+  }
+
+  draw() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+    // Draw Constellation Connection Lines
+    const maxDist = 95;
+    for (let i = 0; i < this.particles.length; i++) {
+      for (let j = i + 1; j < this.particles.length; j++) {
+        const p1 = this.particles[i];
+        const p2 = this.particles[j];
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < maxDist) {
+          const lineAlpha = (1 - dist / maxDist) * 0.12;
+          this.ctx.beginPath();
+          this.ctx.strokeStyle = `rgba(0, 245, 212, ${lineAlpha})`;
+          this.ctx.lineWidth = 0.7;
+          this.ctx.moveTo(p1.x, p1.y);
+          this.ctx.lineTo(p2.x, p2.y);
+          this.ctx.stroke();
+        }
+      }
+    }
+
+    // Draw Particles
+    for (let i = 0; i < this.particles.length; i++) {
+      const p = this.particles[i];
+      this.ctx.beginPath();
+      this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      this.ctx.fillStyle = `${p.color}${p.renderedAlpha})`;
+      this.ctx.shadowBlur = 8;
+      this.ctx.shadowColor = p.color === 'rgba(0, 245, 212, ' ? '#00F5D4' : '#9D4EDD';
+      this.ctx.fill();
+      this.ctx.shadowBlur = 0;
+    }
+  }
+
+  animate() {
+    this.updateParticles();
+    this.draw();
+    requestAnimationFrame(this.animate);
+  }
+}
+
+window.AntiGravityCanvas = AntiGravityCanvas;
+
+/**
+ * AntiGravity Soundscapes & Web Audio Synthesizer
+ * Provides 40Hz Gamma Binaural Beats, Deep Space Ambient Drone, and Timer Chimes
+ */
+class SoundscapesEngine {
+  constructor() {
+    this.ctx = null;
+    this.masterGain = null;
+    this.volume = 0.5;
+
+    // Binaural State
+    this.binauralActive = false;
+    this.binauralLeftOsc = null;
+    this.binauralRightOsc = null;
+    this.binauralGain = null;
+
+    // Space Drone State
+    this.droneActive = false;
+    this.droneOsc1 = null;
+    this.droneOsc2 = null;
+    this.droneFilter = null;
+    this.droneGain = null;
+  }
+
+  ensureContext() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      this.ctx = new AudioCtx();
+      this.masterGain = this.ctx.createGain();
+      this.masterGain.gain.setValueAtTime(this.volume, this.ctx.currentTime);
+      this.masterGain.connect(this.ctx.destination);
+    }
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  }
+
+  setVolume(val) {
+    this.volume = parseFloat(val);
+    if (this.masterGain && this.ctx) {
+      this.masterGain.gain.linearRampToValueAtTime(this.volume, this.ctx.currentTime + 0.05);
+    }
+  }
+
+  // ----------------------------------------------------
+  // 40 Hz Gamma Binaural Beats (Left 200 Hz, Right 240 Hz)
+  // ----------------------------------------------------
+  toggleBinaural() {
+    this.ensureContext();
+    if (this.binauralActive) {
+      this.stopBinaural();
+      return false;
+    } else {
+      this.startBinaural();
+      return true;
+    }
+  }
+
+  startBinaural() {
+    this.ensureContext();
+    const now = this.ctx.currentTime;
+
+    this.binauralGain = this.ctx.createGain();
+    this.binauralGain.gain.setValueAtTime(0, now);
+    this.binauralGain.gain.linearRampToValueAtTime(0.35, now + 0.8);
+    this.binauralGain.connect(this.masterGain);
+
+    // Left Ear (200 Hz)
+    const merger = this.ctx.createChannelMerger(2);
+    this.binauralLeftOsc = this.ctx.createOscillator();
+    this.binauralLeftOsc.type = 'sine';
+    this.binauralLeftOsc.frequency.setValueAtTime(200, now);
+
+    // Right Ear (240 Hz -> 40 Hz differential)
+    this.binauralRightOsc = this.ctx.createOscillator();
+    this.binauralRightOsc.type = 'sine';
+    this.binauralRightOsc.frequency.setValueAtTime(240, now);
+
+    this.binauralLeftOsc.connect(merger, 0, 0);
+    this.binauralRightOsc.connect(merger, 0, 1);
+    merger.connect(this.binauralGain);
+
+    this.binauralLeftOsc.start(now);
+    this.binauralRightOsc.start(now);
+    this.binauralActive = true;
+  }
+
+  stopBinaural() {
+    if (!this.binauralActive || !this.ctx) return;
+    const now = this.ctx.currentTime;
+    if (this.binauralGain) {
+      this.binauralGain.gain.linearRampToValueAtTime(0.001, now + 0.5);
+    }
+    setTimeout(() => {
+      try {
+        if (this.binauralLeftOsc) this.binauralLeftOsc.stop();
+        if (this.binauralRightOsc) this.binauralRightOsc.stop();
+      } catch (e) {}
+      this.binauralActive = false;
+    }, 500);
+  }
+
+  // ----------------------------------------------------
+  // Deep Space Ambient Drone (Low harmonic resonance)
+  // ----------------------------------------------------
+  toggleDrone() {
+    this.ensureContext();
+    if (this.droneActive) {
+      this.stopDrone();
+      return false;
+    } else {
+      this.startDrone();
+      return true;
+    }
+  }
+
+  startDrone() {
+    this.ensureContext();
+    const now = this.ctx.currentTime;
+
+    this.droneGain = this.ctx.createGain();
+    this.droneGain.gain.setValueAtTime(0, now);
+    this.droneGain.gain.linearRampToValueAtTime(0.28, now + 1.2);
+
+    this.droneFilter = this.ctx.createBiquadFilter();
+    this.droneFilter.type = 'lowpass';
+    this.droneFilter.frequency.setValueAtTime(140, now);
+    this.droneFilter.Q.setValueAtTime(4.0, now);
+
+    this.droneOsc1 = this.ctx.createOscillator();
+    this.droneOsc1.type = 'sawtooth';
+    this.droneOsc1.frequency.setValueAtTime(55, now); // A1 note
+
+    this.droneOsc2 = this.ctx.createOscillator();
+    this.droneOsc2.type = 'triangle';
+    this.droneOsc2.frequency.setValueAtTime(55.6, now); // subtle detune for space phasing
+
+    this.droneOsc1.connect(this.droneFilter);
+    this.droneOsc2.connect(this.droneFilter);
+    this.droneFilter.connect(this.droneGain);
+    this.droneGain.connect(this.masterGain);
+
+    this.droneOsc1.start(now);
+    this.droneOsc2.start(now);
+    this.droneActive = true;
+  }
+
+  stopDrone() {
+    if (!this.droneActive || !this.ctx) return;
+    const now = this.ctx.currentTime;
+    if (this.droneGain) {
+      this.droneGain.gain.linearRampToValueAtTime(0.001, now + 0.8);
+    }
+    setTimeout(() => {
+      try {
+        if (this.droneOsc1) this.droneOsc1.stop();
+        if (this.droneOsc2) this.droneOsc2.stop();
+      } catch (e) {}
+      this.droneActive = false;
+    }, 800);
+  }
+
+  // ----------------------------------------------------
+  // Cosmic Bell / Notification Chime
+  // ----------------------------------------------------
+  playChime(type = 'success') {
+    try {
+      this.ensureContext();
+      const now = this.ctx.currentTime;
+      const chimeGain = this.ctx.createGain();
+      chimeGain.connect(this.masterGain);
+
+      const notes = type === 'success' ? [523.25, 659.25, 783.99, 1046.50] : [880, 440];
+      
+      notes.forEach((freq, idx) => {
+        const osc = this.ctx.createOscillator();
+        const noteGain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+
+        noteGain.gain.setValueAtTime(0, now + idx * 0.08);
+        noteGain.gain.linearRampToValueAtTime(0.2, now + idx * 0.08 + 0.02);
+        noteGain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.08 + 0.8);
+
+        osc.connect(noteGain);
+        noteGain.connect(chimeGain);
+
+        osc.start(now + idx * 0.08);
+        osc.stop(now + idx * 0.08 + 0.85);
+      });
+    } catch (e) {
+      console.warn('Audio chime playback error:', e);
+    }
+  }
+}
+
+window.soundEngine = new SoundscapesEngine();
+
+/**
+ * AntiGravity Data Storage & Persistence Module
+ * Manages localStorage, sample blueprint hydration, and JSON Export/Import
+ */
+
+const STORAGE_KEYS = {
+  SCHEDULE: 'sk_zg_schedule_tasks',
+  MATRIX: 'sk_zg_matrix_tasks',
+  FITNESS: 'sk_zg_fitness_data',
+  FOCUS: 'sk_zg_focus_stats',
+  SETTINGS: 'sk_zg_user_settings'
+};
+
+const DEFAULT_BLUEPRINT_DATA = {
+  schedule: [
+    { id: 'sc-1', time: '06:30', title: 'Solar Ignition & Hydration', category: 'health', duration: 30, completed: true, block: 'morning' },
+    { id: 'sc-2', time: '07:30', title: 'Hypertrophy Strength Protocol (Push)', category: 'gym', duration: 60, completed: true, block: 'morning' },
+    { id: 'sc-3', time: '09:00', title: 'Deep Work: AntiGravity Architecture System', category: 'work', duration: 120, completed: false, block: 'morning' },
+    { id: 'sc-4', time: '12:30', title: 'Nutrient Refuel & Sunlight Walk', category: 'health', duration: 45, completed: false, block: 'afternoon' },
+    { id: 'sc-5', time: '14:00', title: 'Sprint Review & Engineering Dispatch', category: 'work', duration: 90, completed: false, block: 'afternoon' },
+    { id: 'sc-6', time: '17:00', title: 'Micro-Power Nap & Soundscape Reset', category: 'rest', duration: 25, completed: false, block: 'evening' },
+    { id: 'sc-7', time: '18:30', title: 'Family & Creative Reading Orbit', category: 'rest', duration: 90, completed: false, block: 'evening' },
+    { id: 'sc-8', time: '21:30', title: 'Digital Deorbit & Sleep Architecture', category: 'rest', duration: 45, completed: false, block: 'night' }
+  ],
+  matrix: [
+    { id: 'mx-1', title: 'Ship Stitch UI ZeroGravity Production Build', quadrant: 'q1', completed: false },
+    { id: 'mx-2', title: 'Resolve Phone Notification Dispatch Latency', quadrant: 'q1', completed: true },
+    { id: 'mx-3', title: 'Plan Q4 Personal Health & Strength Goals', quadrant: 'q2', completed: false },
+    { id: 'mx-4', title: 'Study Rust & WASM Audio Synthesis', quadrant: 'q2', completed: false },
+    { id: 'mx-5', title: 'Respond to Low-Priority Vendor Emails', quadrant: 'q3', completed: false },
+    { id: 'mx-6', title: 'Endless Doomscrolling on Social Media', quadrant: 'q4', completed: true }
+  ],
+  fitness: {
+    activeSplit: 'push',
+    waterGlasses: 5,
+    maxGlasses: 8,
+    exercises: [
+      { id: 'fit-1', name: 'Incline Dumbbell Press', sets: '4 sets x 10 reps', completed: true },
+      { id: 'fit-2', name: 'Weighted Dips / Chest Flyes', sets: '3 sets x 12 reps', completed: true },
+      { id: 'fit-3', name: 'Overhead Barbell Shoulder Press', sets: '4 sets x 8 reps', completed: false },
+      { id: 'fit-4', name: 'Lateral Cable Raises', sets: '4 sets x 15 reps', completed: false },
+      { id: 'fit-5', name: 'Triceps Overhead Extension', sets: '3 sets x 12 reps', completed: false }
+    ]
+  },
+  focus: {
+    totalMinutesToday: 75,
+    completedSessions: 3,
+    presetDuration: 25
+  }
+};
+
+class StorageManager {
+  static getSchedule() {
+    const raw = localStorage.getItem(STORAGE_KEYS.SCHEDULE);
+    if (!raw) {
+      this.saveSchedule(DEFAULT_BLUEPRINT_DATA.schedule);
+      return DEFAULT_BLUEPRINT_DATA.schedule;
+    }
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      return DEFAULT_BLUEPRINT_DATA.schedule;
+    }
+  }
+
+  static saveSchedule(tasks) {
+    localStorage.setItem(STORAGE_KEYS.SCHEDULE, JSON.stringify(tasks));
+  }
+
+  static getMatrix() {
+    const raw = localStorage.getItem(STORAGE_KEYS.MATRIX);
+    if (!raw) {
+      this.saveMatrix(DEFAULT_BLUEPRINT_DATA.matrix);
+      return DEFAULT_BLUEPRINT_DATA.matrix;
+    }
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      return DEFAULT_BLUEPRINT_DATA.matrix;
+    }
+  }
+
+  static saveMatrix(tasks) {
+    localStorage.setItem(STORAGE_KEYS.MATRIX, JSON.stringify(tasks));
+  }
+
+  static getFitness() {
+    const raw = localStorage.getItem(STORAGE_KEYS.FITNESS);
+    if (!raw) {
+      this.saveFitness(DEFAULT_BLUEPRINT_DATA.fitness);
+      return DEFAULT_BLUEPRINT_DATA.fitness;
+    }
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      return DEFAULT_BLUEPRINT_DATA.fitness;
+    }
+  }
+
+  static saveFitness(data) {
+    localStorage.setItem(STORAGE_KEYS.FITNESS, JSON.stringify(data));
+  }
+
+  static getFocusStats() {
+    const raw = localStorage.getItem(STORAGE_KEYS.FOCUS);
+    if (!raw) {
+      this.saveFocusStats(DEFAULT_BLUEPRINT_DATA.focus);
+      return DEFAULT_BLUEPRINT_DATA.focus;
+    }
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      return DEFAULT_BLUEPRINT_DATA.focus;
+    }
+  }
+
+  static saveFocusStats(data) {
+    localStorage.setItem(STORAGE_KEYS.FOCUS, JSON.stringify(data));
+  }
+
+  static resetToBlueprint() {
+    this.saveSchedule(DEFAULT_BLUEPRINT_DATA.schedule);
+    this.saveMatrix(DEFAULT_BLUEPRINT_DATA.matrix);
+    this.saveFitness(DEFAULT_BLUEPRINT_DATA.fitness);
+    this.saveFocusStats(DEFAULT_BLUEPRINT_DATA.focus);
+  }
+
+  static exportJSON() {
+    const backup = {
+      exportDate: new Date().toISOString(),
+      appName: 'SK ZeroGravity Daily Planner',
+      schedule: this.getSchedule(),
+      matrix: this.getMatrix(),
+      fitness: this.getFitness(),
+      focus: this.getFocusStats()
+    };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sk-zerogravity-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+}
+
+window.StorageManager = StorageManager;
+
+/**
+ * 24-Hour Interactive Schedule Builder & Balance Engine
+ */
+
+class ScheduleManager {
+  constructor() {
+    this.tasks = StorageManager.getSchedule();
+    this.activeFilter = 'all';
+
+    this.containerMorning = document.getElementById('tasks-morning');
+    this.containerAfternoon = document.getElementById('tasks-afternoon');
+    this.containerEvening = document.getElementById('tasks-evening');
+    this.containerNight = document.getElementById('tasks-night');
+
+    this.init();
+  }
+
+  init() {
+    this.render();
+    this.updateBalanceMeter();
+    this.bindEvents();
+  }
+
+  bindEvents() {
+    // Quick Presets
+    document.querySelectorAll('.preset-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const type = chip.dataset.preset;
+        this.addPresetTask(type);
+      });
+    });
+
+    // Schedule Block Filters
+    document.querySelectorAll('.filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        this.activeFilter = pill.dataset.filter;
+        this.applyFilter();
+      });
+    });
+
+    // Open Add Task Modal
+    const btnOpenAdd = document.getElementById('btn-open-add-task');
+    if (btnOpenAdd) {
+      btnOpenAdd.addEventListener('click', () => {
+        window.app.openModal('modal-add-task');
+      });
+    }
+
+    // Submit Add Task Form
+    const formAddTask = document.getElementById('form-add-task');
+    if (formAddTask) {
+      formAddTask.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('task-input-title').value.trim();
+        const time = document.getElementById('task-input-time').value;
+        const duration = parseInt(document.getElementById('task-input-duration').value, 10) || 60;
+        const category = document.getElementById('task-input-category').value;
+        const block = this.determineBlock(time);
+
+        if (title && time) {
+          this.addTask({
+            id: 'sc-' + Date.now(),
+            time,
+            title,
+            duration,
+            category,
+            block,
+            completed: false
+          });
+          formAddTask.reset();
+          window.app.closeModal('modal-add-task');
+          window.app.showToast('Task added to orbit schedule!');
+        }
+      });
+    }
+  }
+
+  determineBlock(timeStr) {
+    if (!timeStr) return 'morning';
+    const hour = parseInt(timeStr.split(':')[0], 10);
+    if (hour >= 6 && hour < 12) return 'morning';
+    if (hour >= 12 && hour < 17) return 'afternoon';
+    if (hour >= 17 && hour < 21) return 'evening';
+    return 'night';
+  }
+
+  addPresetTask(type) {
+    const now = new Date();
+    const currentHours = String(now.getHours()).padStart(2, '0');
+    const currentMinutes = String(now.getMinutes()).padStart(2, '0');
+    const timeStr = `${currentHours}:${currentMinutes}`;
+    const block = this.determineBlock(timeStr);
+
+    let newTask = null;
+    switch (type) {
+      case 'work':
+        newTask = { id: 'sc-' + Date.now(), time: timeStr, title: 'Work Deep-Dive (Focused Sprint)', category: 'work', duration: 90, completed: false, block };
+        break;
+      case 'gym':
+        newTask = { id: 'sc-' + Date.now(), time: timeStr, title: 'Intense Gym & Hypertrophy Session', category: 'gym', duration: 60, completed: false, block };
+        break;
+      case 'meal':
+        newTask = { id: 'sc-' + Date.now(), time: timeStr, title: 'Nutritious Fuel & Mindful Hydration', category: 'health', duration: 45, completed: false, block };
+        break;
+      case 'nap':
+        newTask = { id: 'sc-' + Date.now(), time: timeStr, title: 'Power-Nap & Cognitive Recovery', category: 'rest', duration: 25, completed: false, block };
+        break;
+    }
+
+    if (newTask) {
+      this.addTask(newTask);
+      window.app.showToast(`Preset "${newTask.title.slice(0, 20)}..." inserted!`);
+    }
+  }
+
+  addTask(task) {
+    this.tasks.push(task);
+    this.tasks.sort((a, b) => a.time.localeCompare(b.time));
+    StorageManager.saveSchedule(this.tasks);
+    this.render();
+    this.updateBalanceMeter();
+  }
+
+  toggleTask(id) {
+    const task = this.tasks.find(t => t.id === id);
+    if (task) {
+      task.completed = !task.completed;
+      StorageManager.saveSchedule(this.tasks);
+      this.render();
+      this.updateBalanceMeter();
+      if (task.completed && window.soundEngine) {
+        window.soundEngine.playChime('success');
+      }
+    }
+  }
+
+  deleteTask(id) {
+    this.tasks = this.tasks.filter(t => t.id !== id);
+    StorageManager.saveSchedule(this.tasks);
+    this.render();
+    this.updateBalanceMeter();
+    window.app.showToast('Task removed from schedule');
+  }
+
+  applyFilter() {
+    const sections = {
+      morning: document.getElementById('sec-morning'),
+      afternoon: document.getElementById('sec-afternoon'),
+      evening: document.getElementById('sec-evening'),
+      night: document.getElementById('sec-night')
+    };
+
+    Object.keys(sections).forEach(blockKey => {
+      const el = sections[blockKey];
+      if (!el) return;
+      if (this.activeFilter === 'all' || this.activeFilter === blockKey) {
+        el.style.display = 'block';
+      } else {
+        el.style.display = 'none';
+      }
+    });
+  }
+
+  render() {
+    const blocks = {
+      morning: document.getElementById('tasks-morning'),
+      afternoon: document.getElementById('tasks-afternoon'),
+      evening: document.getElementById('tasks-evening'),
+      night: document.getElementById('tasks-night')
+    };
+
+    Object.values(blocks).forEach(c => {
+      if (c) c.innerHTML = '';
+    });
+
+    this.tasks.forEach(task => {
+      const targetContainer = blocks[task.block] || blocks.morning;
+      if (!targetContainer) return;
+
+      const card = document.createElement('div');
+      card.className = `task-card ${task.completed ? 'completed' : ''}`;
+      card.innerHTML = `
+        <div class="task-left">
+          <div class="custom-checkbox ${task.completed ? 'checked' : ''}" onclick="window.scheduleManager.toggleTask('${task.id}')">
+            ${task.completed ? 'âœ“' : ''}
+          </div>
+          <div class="task-meta">
+            <span class="task-title">${this.escapeHtml(task.title)}</span>
+            <div class="task-details">
+              <span>â± ${task.time} (${task.duration}m)</span>
+              <span class="tag-badge tag-${task.category}">${task.category}</span>
+            </div>
+          </div>
+        </div>
+        <div class="task-actions">
+          <button class="icon-btn delete" title="Delete" onclick="window.scheduleManager.deleteTask('${task.id}')">
+            ðŸ—‘
+          </button>
+        </div>
+      `;
+      targetContainer.appendChild(card);
+    });
+
+    this.applyFilter();
+  }
+
+  updateBalanceMeter() {
+    let totalWork = 0;
+    let totalGym = 0;
+    let totalRest = 0;
+    let totalHealth = 0;
+
+    this.tasks.forEach(t => {
+      const dur = t.duration || 60;
+      if (t.category === 'work') totalWork += dur;
+      else if (t.category === 'gym') totalGym += dur;
+      else if (t.category === 'rest') totalRest += dur;
+      else totalHealth += dur;
+    });
+
+    const totalMinutes = Math.max(1, totalWork + totalGym + totalRest + totalHealth);
+
+    const pWork = ((totalWork / totalMinutes) * 100).toFixed(1);
+    const pGym = ((totalGym / totalMinutes) * 100).toFixed(1);
+    const pRest = ((totalRest / totalMinutes) * 100).toFixed(1);
+    const pHealth = ((totalHealth / totalMinutes) * 100).toFixed(1);
+
+    const barWork = document.getElementById('bar-work');
+    const barGym = document.getElementById('bar-gym');
+    const barRest = document.getElementById('bar-rest');
+    const barRoutine = document.getElementById('bar-routine');
+
+    if (barWork) barWork.style.width = `${pWork}%`;
+    if (barGym) barGym.style.width = `${pGym}%`;
+    if (barRest) barRest.style.width = `${pRest}%`;
+    if (barRoutine) barRoutine.style.width = `${pHealth}%`;
+
+    // Calculate score
+    const scoreVal = document.getElementById('schedule-balance-score');
+    if (scoreVal) {
+      // Ideal is a healthy split: Work (40-50%), Gym (10-20%), Rest (25-35%), Health (10-15%)
+      const optimalScore = Math.min(98, Math.max(65, Math.round(100 - Math.abs(pWork - 45))));
+      scoreVal.textContent = `${optimalScore}% Optimal`;
+    }
+
+    // Update Tasks Completed Metric
+    const completedCount = this.tasks.filter(t => t.completed).length;
+    const metricTasks = document.getElementById('metric-tasks-done');
+    if (metricTasks) {
+      metricTasks.textContent = `${completedCount}/${this.tasks.length}`;
+    }
+  }
+
+  escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+}
+
+window.ScheduleManager = ScheduleManager;
+
+/**
+ * Gravity Fields - Eisenhower Matrix System
+ * 4 Quadrants: Zero Gravity (Q1), Low Gravity (Q2), High Mass (Q3), Deep Space (Q4)
+ */
+
+class MatrixManager {
+  constructor() {
+    this.tasks = StorageManager.getMatrix();
+    this.quadrantContainers = {
+      q1: document.getElementById('matrix-tasks-q1'),
+      q2: document.getElementById('matrix-tasks-q2'),
+      q3: document.getElementById('matrix-tasks-q3'),
+      q4: document.getElementById('matrix-tasks-q4')
+    };
+
+    this.init();
+  }
+
+  init() {
+    this.render();
+    this.bindEvents();
+  }
+
+  bindEvents() {
+    // Add task buttons for individual quadrants
+    document.querySelectorAll('.btn-add-matrix-task').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const quadrant = btn.dataset.quadrant || 'q1';
+        this.promptAddTask(quadrant);
+      });
+    });
+  }
+
+  promptAddTask(quadrant) {
+    const input = prompt(`Enter task for ${this.getQuadrantName(quadrant)}:`);
+    if (input && input.trim()) {
+      this.addTask({
+        id: 'mx-' + Date.now(),
+        title: input.trim(),
+        quadrant,
+        completed: false
+      });
+      window.app.showToast('Matrix field updated!');
+    }
+  }
+
+  getQuadrantName(q) {
+    switch(q) {
+      case 'q1': return 'Zero Gravity (Urgent & Important)';
+      case 'q2': return 'Low Gravity (Important, Not Urgent)';
+      case 'q3': return 'High Mass (Urgent, Not Important)';
+      case 'q4': return 'Deep Space (Drop / Deorbit)';
+      default: return 'Quadrant';
+    }
+  }
+
+  addTask(task) {
+    this.tasks.push(task);
+    StorageManager.saveMatrix(this.tasks);
+    this.render();
+  }
+
+  toggleTask(id) {
+    const t = this.tasks.find(x => x.id === id);
+    if (t) {
+      t.completed = !t.completed;
+      StorageManager.saveMatrix(this.tasks);
+      this.render();
+      if (t.completed && window.soundEngine) {
+        window.soundEngine.playChime('success');
+      }
+    }
+  }
+
+  cycleQuadrant(id) {
+    const t = this.tasks.find(x => x.id === id);
+    if (!t) return;
+    const order = ['q1', 'q2', 'q3', 'q4'];
+    const nextIdx = (order.indexOf(t.quadrant) + 1) % order.length;
+    t.quadrant = order[nextIdx];
+    StorageManager.saveMatrix(this.tasks);
+    this.render();
+    window.app.showToast(`Shifted to ${this.getQuadrantName(t.quadrant).split(' ')[0]} Orbit`);
+  }
+
+  deleteTask(id) {
+    this.tasks = this.tasks.filter(x => x.id !== id);
+    StorageManager.saveMatrix(this.tasks);
+    this.render();
+    window.app.showToast('Task removed from Gravity Fields');
+  }
+
+  render() {
+    Object.values(this.quadrantContainers).forEach(c => {
+      if (c) c.innerHTML = '';
+    });
+
+    // Counts
+    const counts = { q1: 0, q2: 0, q3: 0, q4: 0 };
+
+    this.tasks.forEach(task => {
+      if (counts[task.quadrant] !== undefined) counts[task.quadrant]++;
+
+      const container = this.quadrantContainers[task.quadrant];
+      if (!container) return;
+
+      const card = document.createElement('div');
+      card.className = `task-card ${task.completed ? 'completed' : ''}`;
+      card.innerHTML = `
+        <div class="task-left">
+          <div class="custom-checkbox ${task.completed ? 'checked' : ''}" onclick="window.matrixManager.toggleTask('${task.id}')">
+            ${task.completed ? 'âœ“' : ''}
+          </div>
+          <span class="task-title" style="font-size: 0.85rem;">${this.escapeHtml(task.title)}</span>
+        </div>
+        <div class="task-actions">
+          <button class="icon-btn" title="Cycle Quadrant" onclick="window.matrixManager.cycleQuadrant('${task.id}')">
+            ðŸª
+          </button>
+          <button class="icon-btn delete" title="Delete" onclick="window.matrixManager.deleteTask('${task.id}')">
+            ðŸ—‘
+          </button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+
+    // Update count badges
+    ['q1', 'q2', 'q3', 'q4'].forEach(q => {
+      const badge = document.getElementById(`count-${q}`);
+      if (badge) badge.textContent = `${counts[q]} items`;
+    });
+  }
+
+  escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+}
+
+window.MatrixManager = MatrixManager;
+
+/**
+ * Gym & Fitness Time Sync Module
+ * Workout Split Manager, Rest Timer Engine, and 8-Glass Water Hydration Tracker
+ */
+
+const SPLIT_PRESETS = {
+  push: [
+    { id: 'fit-p1', name: 'Incline Dumbbell Bench Press', sets: '4 sets x 8-10 reps', completed: false },
+    { id: 'fit-p2', name: 'Overhead Barbell Military Press', sets: '4 sets x 8 reps', completed: false },
+    { id: 'fit-p3', name: 'Weighted Chest Dips / Cable Flyes', sets: '3 sets x 12 reps', completed: false },
+    { id: 'fit-p4', name: 'Cable Lateral Deltoid Raises', sets: '4 sets x 15 reps', completed: false },
+    { id: 'fit-p5', name: 'Overhead Rope Tricep Extensions', sets: '3 sets x 12 reps', completed: false }
+  ],
+  pull: [
+    { id: 'fit-u1', name: 'Weighted Pull-Ups / Lat Pulldown', sets: '4 sets x 8-10 reps', completed: false },
+    { id: 'fit-u2', name: 'Barbell Bent-Over Rows', sets: '4 sets x 8 reps', completed: false },
+    { id: 'fit-u3', name: 'Chest-Supported Dumbbell Rows', sets: '3 sets x 12 reps', completed: false },
+    { id: 'fit-u4', name: 'Incline Dumbbell Bicep Curls', sets: '3 sets x 12 reps', completed: false },
+    { id: 'fit-u5', name: 'Face Pulls with External Rotation', sets: '4 sets x 15 reps', completed: false }
+  ],
+  legs: [
+    { id: 'fit-l1', name: 'Barbell Back Squats (Heavy)', sets: '4 sets x 6-8 reps', completed: false },
+    { id: 'fit-l2', name: 'Romanian Deadlifts (Hamstrings)', sets: '4 sets x 10 reps', completed: false },
+    { id: 'fit-l3', name: 'Bulgarian Split Squats', sets: '3 sets x 10 reps/leg', completed: false },
+    { id: 'fit-l4', name: 'Standing Calf Raises', sets: '4 sets x 15 reps', completed: false },
+    { id: 'fit-l5', name: 'Hanging Leg Raises / Core Compression', sets: '3 sets x 15 reps', completed: false }
+  ],
+  cardio: [
+    { id: 'fit-c1', name: 'Zone-2 Steady Incline Treadmill Walk', sets: '30 minutes @ 60-70% Max HR', completed: false },
+    { id: 'fit-c2', name: 'HIIT Rowing Machine Sprints', sets: '8 rounds (30s on / 30s rest)', completed: false },
+    { id: 'fit-c3', name: 'Core Planks & Hollow Holds', sets: '4 sets x 60s', completed: false }
+  ]
+};
+
+class FitnessManager {
+  constructor() {
+    this.data = StorageManager.getFitness();
+    
+    // Rest Timer State
+    this.restDuration = 60;
+    this.restTimeLeft = 60;
+    this.restTimerId = null;
+    this.isRestRunning = false;
+
+    this.init();
+  }
+
+  init() {
+    this.renderSplits();
+    this.renderExercises();
+    this.renderWater();
+    this.bindEvents();
+  }
+
+  bindEvents() {
+    // Workout Split Selectors
+    document.querySelectorAll('.split-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const split = pill.dataset.split;
+        this.selectSplit(split);
+      });
+    });
+
+    // Rest Timer Controls
+    const btnStartRest = document.getElementById('btn-start-rest');
+    const btnResetRest = document.getElementById('btn-reset-rest');
+
+    if (btnStartRest) {
+      btnStartRest.addEventListener('click', () => {
+        if (this.isRestRunning) {
+          this.pauseRestTimer();
+        } else {
+          this.startRestTimer();
+        }
+      });
+    }
+
+    if (btnResetRest) {
+      btnResetRest.addEventListener('click', () => {
+        this.resetRestTimer();
+      });
+    }
+
+    document.querySelectorAll('.rest-preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const seconds = parseInt(btn.dataset.seconds, 10);
+        this.setRestDuration(seconds);
+      });
+    });
+
+    // Add Custom Exercise
+    const btnAddEx = document.getElementById('btn-add-exercise');
+    if (btnAddEx) {
+      btnAddEx.addEventListener('click', () => {
+        const name = prompt('Enter exercise name (e.g. Barbell Squats):');
+        if (name && name.trim()) {
+          const sets = prompt('Enter sets & reps (e.g. 4 sets x 10 reps):') || '3 sets x 10 reps';
+          this.data.exercises.push({
+            id: 'fit-' + Date.now(),
+            name: name.trim(),
+            sets: sets.trim(),
+            completed: false
+          });
+          StorageManager.saveFitness(this.data);
+          this.renderExercises();
+          window.app.showToast('Exercise added to workout!');
+        }
+      });
+    }
+  }
+
+  selectSplit(splitKey) {
+    this.data.activeSplit = splitKey;
+    if (SPLIT_PRESETS[splitKey]) {
+      this.data.exercises = JSON.parse(JSON.stringify(SPLIT_PRESETS[splitKey]));
+    }
+    StorageManager.saveFitness(this.data);
+    this.renderSplits();
+    this.renderExercises();
+    window.app.showToast(`Loaded ${splitKey.toUpperCase()} Split`);
+  }
+
+  renderSplits() {
+    document.querySelectorAll('.split-pill').forEach(pill => {
+      if (pill.dataset.split === this.data.activeSplit) {
+        pill.classList.add('active');
+      } else {
+        pill.classList.remove('active');
+      }
+    });
+  }
+
+  renderExercises() {
+    const container = document.getElementById('fitness-exercise-list');
+    if (!container) return;
+    container.innerHTML = '';
+
+    this.data.exercises.forEach(ex => {
+      const card = document.createElement('div');
+      card.className = `task-card ${ex.completed ? 'completed' : ''}`;
+      card.innerHTML = `
+        <div class="task-left">
+          <div class="custom-checkbox ${ex.completed ? 'checked' : ''}" onclick="window.fitnessManager.toggleExercise('${ex.id}')">
+            ${ex.completed ? 'âœ“' : ''}
+          </div>
+          <div class="task-meta">
+            <span class="task-title" style="font-size: 0.88rem;">${this.escapeHtml(ex.name)}</span>
+            <span class="task-details" style="color: var(--accent-amber);">${this.escapeHtml(ex.sets)}</span>
+          </div>
+        </div>
+        <div class="task-actions">
+          <button class="icon-btn delete" title="Delete" onclick="window.fitnessManager.deleteExercise('${ex.id}')">
+            ðŸ—‘
+          </button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  toggleExercise(id) {
+    const ex = this.data.exercises.find(x => x.id === id);
+    if (ex) {
+      ex.completed = !ex.completed;
+      StorageManager.saveFitness(this.data);
+      this.renderExercises();
+      if (ex.completed && window.soundEngine) {
+        window.soundEngine.playChime('success');
+      }
+    }
+  }
+
+  deleteExercise(id) {
+    this.data.exercises = this.data.exercises.filter(x => x.id !== id);
+    StorageManager.saveFitness(this.data);
+    this.renderExercises();
+  }
+
+  // ---------------------------------------------
+  // Rest Timer
+  // ---------------------------------------------
+  setRestDuration(seconds) {
+    this.pauseRestTimer();
+    this.restDuration = seconds;
+    this.restTimeLeft = seconds;
+    this.updateRestDisplay();
+  }
+
+  startRestTimer() {
+    if (this.isRestRunning) return;
+    this.isRestRunning = true;
+    const btn = document.getElementById('btn-start-rest');
+    if (btn) btn.textContent = 'Pause';
+
+    this.restTimerId = setInterval(() => {
+      if (this.restTimeLeft > 0) {
+        this.restTimeLeft--;
+        this.updateRestDisplay();
+      } else {
+        this.pauseRestTimer();
+        if (window.soundEngine) {
+          window.soundEngine.playChime('success');
+        }
+        window.app.showToast('ðŸ”” Rest Time Complete! Initiate next set!');
+      }
+    }, 1000);
+  }
+
+  pauseRestTimer() {
+    this.isRestRunning = false;
+    clearInterval(this.restTimerId);
+    const btn = document.getElementById('btn-start-rest');
+    if (btn) btn.textContent = 'Start Rest';
+  }
+
+  resetRestTimer() {
+    this.pauseRestTimer();
+    this.restTimeLeft = this.restDuration;
+    this.updateRestDisplay();
+  }
+
+  updateRestDisplay() {
+    const display = document.getElementById('rest-timer-display');
+    if (display) {
+      const mins = Math.floor(this.restTimeLeft / 60);
+      const secs = this.restTimeLeft % 60;
+      display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+  }
+
+  // ---------------------------------------------
+  // 8-Glass Water Hydration
+  // ---------------------------------------------
+  renderWater() {
+    const grid = document.getElementById('water-glasses-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    const total = this.data.maxGlasses || 8;
+    const current = this.data.waterGlasses || 0;
+
+    for (let i = 1; i <= total; i++) {
+      const isFilled = i <= current;
+      const glassBtn = document.createElement('button');
+      glassBtn.className = `water-glass-btn ${isFilled ? 'filled' : ''}`;
+      glassBtn.innerHTML = `
+        <span style="font-size: 1.4rem;">${isFilled ? 'ðŸ’§' : 'ðŸ¥›'}</span>
+        <span style="font-size: 0.68rem; font-weight: 600;">#${i} (250ml)</span>
+      `;
+      glassBtn.onclick = () => this.setWaterGlasses(isFilled && i === current ? i - 1 : i);
+      grid.appendChild(glassBtn);
+    }
+
+    const metricWater = document.getElementById('metric-water-intake');
+    if (metricWater) {
+      metricWater.textContent = `${current}/${total}`;
+    }
+
+    const waterPercent = document.getElementById('water-status-text');
+    if (waterPercent) {
+      const ml = current * 250;
+      waterPercent.textContent = `${ml} ml of 2,000 ml (${Math.round((current / total) * 100)}%)`;
+    }
+  }
+
+  setWaterGlasses(count) {
+    this.data.waterGlasses = Math.max(0, Math.min(this.data.maxGlasses || 8, count));
+    StorageManager.saveFitness(this.data);
+    this.renderWater();
+    if (window.soundEngine) {
+      window.soundEngine.playChime('success');
+    }
+  }
+
+  escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+}
+
+window.FitnessManager = FitnessManager;
+
+/**
+ * Focus Orb & Pomodoro Engine
+ * Controls the circular glowing timer, session cycles, and audio sync
+ */
+
+class FocusOrbManager {
+  constructor() {
+    this.stats = StorageManager.getFocusStats();
+    this.totalSeconds = 25 * 60;
+    this.secondsLeft = 25 * 60;
+    this.timerId = null;
+    this.isRunning = false;
+    this.mode = 'focus'; // 'focus', 'short-break', 'long-break'
+    this.circleCircumference = 691; // 2 * PI * 110
+
+    this.orbTimeDisplay = document.getElementById('focus-orb-time');
+    this.orbProgressCircle = document.getElementById('orb-progress');
+    this.orbModeLabel = document.getElementById('focus-orb-mode');
+
+    this.init();
+  }
+
+  init() {
+    this.updateDisplay();
+    this.updateStatsDisplay();
+    this.bindEvents();
+  }
+
+  bindEvents() {
+    const btnToggle = document.getElementById('btn-focus-toggle');
+    const btnReset = document.getElementById('btn-focus-reset');
+
+    if (btnToggle) {
+      btnToggle.addEventListener('click', () => {
+        if (this.isRunning) {
+          this.pause();
+        } else {
+          this.start();
+        }
+      });
+    }
+
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        this.reset();
+      });
+    }
+
+    // Preset Buttons
+    document.querySelectorAll('.focus-preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.focus-preset-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const minutes = parseInt(btn.dataset.minutes, 10);
+        const mode = btn.dataset.mode || 'focus';
+        this.setMode(mode, minutes);
+      });
+    });
+
+    // Soundscape quick toggles
+    const btnBinaural = document.getElementById('btn-toggle-binaural');
+    const btnDrone = document.getElementById('btn-toggle-drone');
+    const volumeSlider = document.getElementById('sound-volume-slider');
+
+    if (btnBinaural) {
+      btnBinaural.addEventListener('click', () => {
+        const active = window.soundEngine.toggleBinaural();
+        btnBinaural.classList.toggle('active', active);
+        btnBinaural.textContent = active ? '40Hz Gamma: ON' : '40Hz Gamma: OFF';
+        const card = document.getElementById('card-binaural');
+        if (card) card.classList.toggle('sound-active', active);
+      });
+    }
+
+    if (btnDrone) {
+      btnDrone.addEventListener('click', () => {
+        const active = window.soundEngine.toggleDrone();
+        btnDrone.classList.toggle('active', active);
+        btnDrone.textContent = active ? 'Space Drone: ON' : 'Space Drone: OFF';
+        const card = document.getElementById('card-drone');
+        if (card) card.classList.toggle('sound-active', active);
+      });
+    }
+
+    if (volumeSlider) {
+      volumeSlider.addEventListener('input', (e) => {
+        window.soundEngine.setVolume(e.target.value);
+      });
+    }
+  }
+
+  setMode(mode, minutes) {
+    this.pause();
+    this.mode = mode;
+    this.totalSeconds = minutes * 60;
+    this.secondsLeft = this.totalSeconds;
+    
+    if (this.orbModeLabel) {
+      this.orbModeLabel.textContent = mode.replace('-', ' ').toUpperCase();
+    }
+    this.updateDisplay();
+  }
+
+  start() {
+    if (this.isRunning) return;
+    this.isRunning = true;
+    const btn = document.getElementById('btn-focus-toggle');
+    if (btn) btn.textContent = 'Pause Focus';
+
+    // Auto-prompt soundscapes suggestion if user desires
+    this.timerId = setInterval(() => {
+      if (this.secondsLeft > 0) {
+        this.secondsLeft--;
+        this.updateDisplay();
+      } else {
+        this.completeSession();
+      }
+    }, 1000);
+  }
+
+  pause() {
+    this.isRunning = false;
+    clearInterval(this.timerId);
+    const btn = document.getElementById('btn-focus-toggle');
+    if (btn) btn.textContent = 'Start Focus';
+  }
+
+  reset() {
+    this.pause();
+    this.secondsLeft = this.totalSeconds;
+    this.updateDisplay();
+  }
+
+  completeSession() {
+    this.pause();
+    if (window.soundEngine) {
+      window.soundEngine.playChime('success');
+    }
+
+    if (this.mode === 'focus') {
+      const minutesSpent = Math.round(this.totalSeconds / 60);
+      this.stats.totalMinutesToday += minutesSpent;
+      this.stats.completedSessions += 1;
+      StorageManager.saveFocusStats(this.stats);
+      this.updateStatsDisplay();
+      window.app.showToast(`âœ¨ Focus session complete (+${minutesSpent} mins logged)!`);
+      
+      // Send real push notification if enabled
+      if (window.notificationManager) {
+        window.notificationManager.sendPushNotification(
+          'ðŸŽ¯ Focus Round Finished!',
+          'Outstanding work! Take a 5-minute zero-g recovery break.'
+        );
+      }
+    } else {
+      window.app.showToast('ðŸ”” Break concluded! Ready to re-engage?');
+    }
+
+    this.reset();
+  }
+
+  updateDisplay() {
+    const mins = Math.floor(this.secondsLeft / 60);
+    const secs = this.secondsLeft % 60;
+    const timeFormatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+    if (this.orbTimeDisplay) {
+      this.orbTimeDisplay.textContent = timeFormatted;
+    }
+
+    if (this.orbProgressCircle) {
+      const fraction = (this.totalSeconds - this.secondsLeft) / this.totalSeconds;
+      const offset = this.circleCircumference - (fraction * this.circleCircumference);
+      this.orbProgressCircle.style.strokeDashoffset = offset;
+    }
+  }
+
+  updateStatsDisplay() {
+    const statFocusMinutes = document.getElementById('stat-focus-minutes');
+    if (statFocusMinutes) {
+      statFocusMinutes.textContent = `${this.stats.totalMinutesToday}m`;
+    }
+
+    const statSessions = document.getElementById('stat-focus-sessions');
+    if (statSessions) {
+      statSessions.textContent = `${this.stats.completedSessions} rounds`;
+    }
+
+    const metricFocus = document.getElementById('metric-focus-time');
+    if (metricFocus) {
+      metricFocus.textContent = `${this.stats.totalMinutesToday}m`;
+    }
+  }
+}
+
+window.FocusOrbManager = FocusOrbManager;
+
+/**
+ * Phone Message & SMS Dispatch Simulator Module
+ * Simulates mobile notifications and integrates native Web Push Notifications API
+ */
+
+class NotificationManager {
+  constructor() {
+    this.phoneNotificationsContainer = document.getElementById('phone-notifications-list');
+    this.hasBrowserPermission = ('Notification' in window) && Notification.permission === 'granted';
+
+    this.simulatedNotifications = [
+      {
+        id: 'pn-1',
+        title: 'SK ZeroGravity Orbit Brief',
+        body: 'Morning! 3 high-priority tasks in Zero-G orbit today. Workout: Push Hypertrophy.',
+        time: '07:30 AM'
+      },
+      {
+        id: 'pn-2',
+        title: 'Gym Hydration Sync',
+        body: 'Hydration Target: 5/8 glasses logged. Keep electrolyte balance optimal!',
+        time: '11:15 AM'
+      }
+    ];
+
+    this.init();
+  }
+
+  init() {
+    this.renderSimulatedNotifications();
+    this.bindEvents();
+    this.updateClock();
+    setInterval(() => this.updateClock(), 1000);
+  }
+
+  bindEvents() {
+    // Request Browser Push Permission Button
+    const btnPerm = document.getElementById('btn-request-browser-notif');
+    if (btnPerm) {
+      if (this.hasBrowserPermission) {
+        btnPerm.textContent = 'âœ“ Push Alerts Enabled';
+        btnPerm.classList.add('active');
+      }
+      btnPerm.addEventListener('click', () => this.requestBrowserPermission());
+    }
+
+    // Preset Dispatch Buttons
+    document.querySelectorAll('.btn-dispatch-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.dataset.type;
+        this.dispatchPresetNotification(type);
+      });
+    });
+
+    // Custom Dispatch Form
+    const formDispatch = document.getElementById('form-custom-dispatch');
+    if (formDispatch) {
+      formDispatch.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('input-dispatch-title').value.trim();
+        const body = document.getElementById('input-dispatch-body').value.trim();
+        const delaySec = parseInt(document.getElementById('select-dispatch-delay').value, 10) || 0;
+
+        if (title && body) {
+          if (delaySec > 0) {
+            window.app.showToast(`Notification scheduled in ${delaySec} seconds...`);
+            setTimeout(() => {
+              this.triggerNotification(title, body);
+            }, delaySec * 1000);
+          } else {
+            this.triggerNotification(title, body);
+          }
+          formDispatch.reset();
+        }
+      });
+    }
+
+    // Share to WhatsApp / Telegram
+    const btnWhatsApp = document.getElementById('btn-share-whatsapp');
+    const btnTelegram = document.getElementById('btn-share-telegram');
+    const btnCopyDigest = document.getElementById('btn-copy-digest');
+
+    if (btnWhatsApp) {
+      btnWhatsApp.addEventListener('click', () => this.shareToMessaging('whatsapp'));
+    }
+    if (btnTelegram) {
+      btnTelegram.addEventListener('click', () => this.shareToMessaging('telegram'));
+    }
+    if (btnCopyDigest) {
+      btnCopyDigest.addEventListener('click', () => this.copyDailyDigest());
+    }
+  }
+
+  updateClock() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const mins = String(now.getMinutes()).padStart(2, '0');
+    const phoneClock = document.getElementById('phone-mockup-clock');
+    if (phoneClock) {
+      phoneClock.textContent = `${hours}:${mins}`;
+    }
+  }
+
+  async requestBrowserPermission() {
+    if (!('Notification' in window)) {
+      window.app.showToast('Web Notifications not supported in this browser.');
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+    const btnPerm = document.getElementById('btn-request-browser-notif');
+    if (permission === 'granted') {
+      this.hasBrowserPermission = true;
+      if (btnPerm) {
+        btnPerm.textContent = 'âœ“ Push Alerts Enabled';
+        btnPerm.classList.add('active');
+      }
+      this.sendPushNotification('ðŸš€ Notifications Connected!', 'SK ZeroGravity alerts are now active on your device.');
+      window.app.showToast('Push notifications successfully enabled!');
+    } else {
+      window.app.showToast('Notification permission denied or dismissed.');
+    }
+  }
+
+  sendPushNotification(title, body) {
+    if (('Notification' in window) && Notification.permission === 'granted') {
+      try {
+        new Notification(title, {
+          body,
+          icon: 'https://cdn-icons-png.flaticon.com/512/3241/3241470.png'
+        });
+      } catch (e) {
+        console.warn('Push notification delivery error:', e);
+      }
+    }
+  }
+
+  triggerNotification(title, body) {
+    // Add to simulated phone list
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    
+    this.simulatedNotifications.unshift({
+      id: 'pn-' + Date.now(),
+      title,
+      body,
+      time: timeStr
+    });
+
+    if (this.simulatedNotifications.length > 5) {
+      this.simulatedNotifications.pop();
+    }
+
+    this.renderSimulatedNotifications();
+    this.sendPushNotification(title, body);
+
+    if (window.soundEngine) {
+      window.soundEngine.playChime('alert');
+    }
+
+    window.app.showToast(`ðŸ“± Phone Alert Dispatched: "${title}"`);
+  }
+
+  dispatchPresetNotification(type) {
+    switch (type) {
+      case 'morning':
+        this.triggerNotification(
+          'ðŸŒ… Orbit Ignition Routine',
+          'Good morning! 4 focus blocks scheduled today. Time to hydrate & start your morning routine.'
+        );
+        break;
+      case 'gym':
+        this.triggerNotification(
+          'âš¡ Gym Protocol Reminder',
+          'Upcoming Workout Block: Push Day Hypertrophy. Rest timers and splits preloaded!'
+        );
+        break;
+      case 'focus':
+        this.triggerNotification(
+          'ðŸŽ¯ Focus Sprint Alert',
+          'Deep Work block starts in 5 minutes. Put phone in Zero-G DND mode.'
+        );
+        break;
+      case 'review':
+        const tasks = StorageManager.getSchedule();
+        const done = tasks.filter(t => t.completed).length;
+        this.triggerNotification(
+          'ðŸŒ™ Daily Deorbit Review',
+          `Daily Wrap-up: You accomplished ${done} of ${tasks.length} orbit targets today!`
+        );
+        break;
+    }
+  }
+
+  generateDailyDigest() {
+    const tasks = StorageManager.getSchedule();
+    const fitness = StorageManager.getFitness();
+    const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+    let text = `ðŸš€ *SK ZeroGravity Daily Brief* (${dateStr})\n\n`;
+    text += `*Schedule Orbit:*\n`;
+    tasks.forEach(t => {
+      text += `${t.completed ? 'âœ…' : 'â³'} ${t.time} - ${t.title} (${t.duration}m)\n`;
+    });
+
+    text += `\n*Fitness & Hydration:*\n`;
+    text += `â€¢ Split: ${fitness.activeSplit.toUpperCase()}\n`;
+    text += `â€¢ Hydration: ${fitness.waterGlasses * 250}ml / 2000ml (${fitness.waterGlasses}/8 glasses)\n\n`;
+    text += `Stay focused in zero gravity! ðŸª`;
+    return text;
+  }
+
+  copyDailyDigest() {
+    const digest = this.generateDailyDigest();
+    navigator.clipboard.writeText(digest).then(() => {
+      window.app.showToast('ðŸ“‹ Daily digest copied to clipboard!');
+    }).catch(() => {
+      window.app.showToast('Could not copy automatically. Check permissions.');
+    });
+  }
+
+  shareToMessaging(platform) {
+    const digest = this.generateDailyDigest();
+    const encoded = encodeURIComponent(digest);
+    let url = '';
+
+    if (platform === 'whatsapp') {
+      url = `https://api.whatsapp.com/send?text=${encoded}`;
+    } else if (platform === 'telegram') {
+      url = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encoded}`;
+    }
+
+    if (url) {
+      window.open(url, '_blank');
+    }
+  }
+
+  renderSimulatedNotifications() {
+    if (!this.phoneNotificationsContainer) return;
+    this.phoneNotificationsContainer.innerHTML = '';
+
+    this.simulatedNotifications.forEach(n => {
+      const card = document.createElement('div');
+      card.className = 'phone-notif-card';
+      card.innerHTML = `
+        <div class="notif-header">
+          <span class="notif-app-tag">âš¡ ZeroGravity</span>
+          <span>${n.time}</span>
+        </div>
+        <div class="notif-body">
+          <strong style="color: #00F5D4; display: block; margin-bottom: 2px;">${this.escapeHtml(n.title)}</strong>
+          ${this.escapeHtml(n.body)}
+        </div>
+      `;
+      this.phoneNotificationsContainer.appendChild(card);
+    });
+  }
+
+  escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+}
+
+window.NotificationManager = NotificationManager;
+
+/**
+ * Google AI Studio (Gemini API) Integration Module
+ * Enables AI Schedule Generation, Eisenhower Task Categorization, and Smart Phone Notifications
+ */
+
+class GeminiAIEngine {
+  constructor() {
+    this.apiKey = localStorage.getItem('sk_zg_gemini_api_key') || '';
+    this.model = 'gemini-1.5-flash';
+    this.init();
+  }
+
+  init() {
+    this.updateStatusBadge();
+    this.bindEvents();
+  }
+
+  getApiKey() {
+    return this.apiKey;
+  }
+
+  setApiKey(key) {
+    this.apiKey = key.trim();
+    localStorage.setItem('sk_zg_gemini_api_key', this.apiKey);
+    this.updateStatusBadge();
+    window.app.showToast(this.apiKey ? 'âœ¨ Gemini API Key Saved!' : 'API Key Removed');
+  }
+
+  updateStatusBadge() {
+    const badge = document.getElementById('ai-status-indicator');
+    if (badge) {
+      if (this.apiKey) {
+        badge.textContent = 'â— Gemini AI Connected';
+        badge.style.color = 'var(--accent-cyan)';
+      } else {
+        badge.textContent = 'â—‹ AI Key Needed (Free)';
+        badge.style.color = 'var(--text-muted)';
+      }
+    }
+  }
+
+  async callGemini(promptText) {
+    if (!this.apiKey) {
+      window.app.openModal('modal-gemini-settings');
+      throw new Error('Please configure your Google AI Studio API key first.');
+    }
+
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`;
+
+    const requestBody = {
+      contents: [
+        {
+          parts: [{ text: promptText }]
+        }
+      ]
+    };
+
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      const msg = errData?.error?.message || `HTTP ${res.status}: ${res.statusText}`;
+      throw new Error(msg);
+    }
+
+    const data = await res.json();
+    return data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  }
+
+  // ----------------------------------------------------
+  // 1. AI 24-Hour Schedule Generator
+  // ----------------------------------------------------
+  async generateDailyPlan(userGoal) {
+    const prompt = `You are the SK ZeroGravity AI Schedule Optimizer. The user has this day goal: "${userGoal}".
+Create an optimized 24-hour time-blocked schedule.
+Return ONLY valid JSON with this exact array structure, no markdown backticks, no other text:
+[
+  { "time": "08:00", "title": "Morning Solar Ignition", "category": "health", "duration": 30, "block": "morning" },
+  { "time": "09:00", "title": "Deep Work Sprint", "category": "work", "duration": 90, "block": "morning" }
+]
+Allowed categories: "work", "gym", "health", "rest".
+Allowed blocks: "morning" (06-12), "afternoon" (12-17), "evening" (17-21), "night" (21-06).`;
+
+    const raw = await this.callGemini(prompt);
+    const cleaned = raw.replace(/```json/g, '').replace(/```/g, '').trim();
+    return JSON.parse(cleaned);
+  }
+
+  // ----------------------------------------------------
+  // 2. AI Eisenhower Matrix Sorter
+  // ----------------------------------------------------
+  async sortTasksIntoMatrix(rawList) {
+    const prompt = `You are the ZeroGravity Eisenhower Matrix AI.
+User tasks: "${rawList}".
+Categorize each task into one of these 4 quadrants:
+- "q1": Zero Gravity (Urgent & Important)
+- "q2": Low Gravity (Important, Not Urgent)
+- "q3": High Mass (Urgent, Not Important)
+- "q4": Deep Space (Not Urgent, Not Important)
+
+Return ONLY valid JSON array:
+[
+  { "title": "Fix server crash", "quadrant": "q1" },
+  { "title": "Read 2 chapters", "quadrant": "q2" }
+]`;
+
+    const raw = await this.callGemini(prompt);
+    const cleaned = raw.replace(/```json/g, '').replace(/```/g, '').trim();
+    return JSON.parse(cleaned);
+  }
+
+  // ----------------------------------------------------
+  // 3. AI Smart Phone Message Drafter
+  // ----------------------------------------------------
+  async draftPhoneDigest() {
+    const schedule = StorageManager.getSchedule();
+    const fitness = StorageManager.getFitness();
+    const prompt = `Write a punchy, ultra-motivating 3-line mobile SMS notification for a person with this day:
+Current tasks: ${schedule.map(t => t.title).join(', ')}
+Workout: ${fitness.activeSplit} split, ${fitness.waterGlasses}/8 water glasses.
+Keep it concise, futuristic space tone with emojis, under 250 characters.`;
+
+    return await this.callGemini(prompt);
+  }
+
+  bindEvents() {
+    // Save API Key Form
+    const formKey = document.getElementById('form-gemini-key');
+    if (formKey) {
+      const input = document.getElementById('input-gemini-api-key');
+      if (input && this.apiKey) {
+        input.value = this.apiKey;
+      }
+
+      formKey.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const keyVal = document.getElementById('input-gemini-api-key').value;
+        this.setApiKey(keyVal);
+        window.app.closeModal('modal-gemini-settings');
+      });
+    }
+
+    // AI Generate Schedule Button
+    const btnAiSchedule = document.getElementById('btn-ai-generate-schedule');
+    if (btnAiSchedule) {
+      btnAiSchedule.addEventListener('click', async () => {
+        const goal = prompt('Describe today\'s main priorities (e.g., "Deep coding sprint, 5pm push workout, healthy eating"):');
+        if (!goal || !goal.trim()) return;
+
+        btnAiSchedule.textContent = 'â³ Gemini is planning...';
+        btnAiSchedule.disabled = true;
+
+        try {
+          const newTasks = await this.generateDailyPlan(goal.trim());
+          if (Array.isArray(newTasks) && newTasks.length > 0) {
+            newTasks.forEach(t => {
+              window.scheduleManager.addTask({
+                id: 'sc-ai-' + Date.now() + Math.random().toString(36).substr(2, 4),
+                time: t.time || '10:00',
+                title: t.title,
+                duration: t.duration || 60,
+                category: t.category || 'work',
+                block: t.block || 'morning',
+                completed: false
+              });
+            });
+            window.app.showToast(`âœ¨ Gemini generated ${newTasks.length} schedule blocks!`);
+          }
+        } catch (err) {
+          alert('AI Error: ' + err.message);
+        } finally {
+          btnAiSchedule.textContent = 'âœ¨ AI Auto-Plan Day';
+          btnAiSchedule.disabled = false;
+        }
+      });
+    }
+
+    // AI Matrix Sorter Button
+    const btnAiMatrix = document.getElementById('btn-ai-sort-matrix');
+    if (btnAiMatrix) {
+      btnAiMatrix.addEventListener('click', async () => {
+        const raw = prompt('Paste your unorganized to-do items separated by commas:\n(e.g., Deploy website, Reply to email, Read book, Fix database bug)');
+        if (!raw || !raw.trim()) return;
+
+        btnAiMatrix.textContent = 'â³ Categorizing...';
+        btnAiMatrix.disabled = true;
+
+        try {
+          const categorized = await this.sortTasksIntoMatrix(raw.trim());
+          if (Array.isArray(categorized)) {
+            categorized.forEach(item => {
+              window.matrixManager.addTask({
+                id: 'mx-ai-' + Date.now() + Math.random().toString(36).substr(2, 4),
+                title: item.title,
+                quadrant: item.quadrant || 'q1',
+                completed: false
+              });
+            });
+            window.app.showToast(`ðŸª Gemini sorted ${categorized.length} tasks into Gravity Fields!`);
+          }
+        } catch (err) {
+          alert('AI Error: ' + err.message);
+        } finally {
+          btnAiMatrix.textContent = 'âœ¨ AI Sort Matrix';
+          btnAiMatrix.disabled = false;
+        }
+      });
+    }
+
+    // AI Phone Notification Drafter
+    const btnAiDraftNotif = document.getElementById('btn-ai-draft-notif');
+    if (btnAiDraftNotif) {
+      btnAiDraftNotif.addEventListener('click', async () => {
+        btnAiDraftNotif.textContent = 'â³ Gemini drafting...';
+        btnAiDraftNotif.disabled = true;
+
+        try {
+          const text = await this.draftPhoneDigest();
+          const titleInput = document.getElementById('input-dispatch-title');
+          const bodyInput = document.getElementById('input-dispatch-body');
+          if (titleInput) titleInput.value = 'ðŸš€ AI Daily Motivation';
+          if (bodyInput) bodyInput.value = text.trim();
+          window.app.showToast('AI drafted phone notification!');
+        } catch (err) {
+          alert('AI Error: ' + err.message);
+        } finally {
+          btnAiDraftNotif.textContent = 'âœ¨ AI Draft Notification';
+          btnAiDraftNotif.disabled = false;
+        }
+      });
+    }
+  }
+}
+
+window.GeminiAIEngine = GeminiAIEngine;
+
+/**
+ * Main Application Orchestrator for SK ZeroGravity Daily Planner
+ */
+
+class App {
+  constructor() {
+    this.currentTab = 'schedule';
+    this.toastContainer = document.getElementById('toast-container');
+    this.init();
+  }
+
+  init() {
+    this.initClock();
+    this.initTabs();
+    this.initModals();
+    this.initHeaderControls();
+
+    // Instantiate Subsystems
+    window.antiGravityCanvas = new AntiGravityCanvas('anti-gravity-canvas');
+    window.scheduleManager = new ScheduleManager();
+    window.matrixManager = new MatrixManager();
+    window.fitnessManager = new FitnessManager();
+    window.focusOrbManager = new FocusOrbManager();
+    window.notificationManager = new NotificationManager();
+    window.geminiAI = new GeminiAIEngine();
+  }
+
+  initClock() {
+    const updateTime = () => {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      const secs = String(now.getSeconds()).padStart(2, '0');
+
+      const clockEl = document.getElementById('hud-time-clock');
+      if (clockEl) {
+        clockEl.textContent = `${hours}:${mins}:${secs}`;
+      }
+
+      const dateEl = document.getElementById('hud-date-stamp');
+      if (dateEl) {
+        dateEl.textContent = now.toLocaleDateString('en-US', {
+          weekday: 'long',
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      }
+
+      const orbitBadgeText = document.getElementById('current-orbit-phase');
+      if (orbitBadgeText) {
+        const hour = now.getHours();
+        if (hour >= 6 && hour < 12) orbitBadgeText.textContent = 'MORNING ORBIT (06:00 - 12:00)';
+        else if (hour >= 12 && hour < 17) orbitBadgeText.textContent = 'AFTERNOON ORBIT (12:00 - 17:00)';
+        else if (hour >= 17 && hour < 21) orbitBadgeText.textContent = 'EVENING ORBIT (17:00 - 21:00)';
+        else orbitBadgeText.textContent = 'NIGHT DEORBIT (21:00 - 06:00)';
+      }
+    };
+
+    updateTime();
+    setInterval(updateTime, 1000);
+  }
+
+  initTabs() {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tabTarget = btn.dataset.tab;
+        this.switchTab(tabTarget);
+      });
+    });
+  }
+
+  switchTab(tabKey) {
+    this.currentTab = tabKey;
+
+    // Update Tab Buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === tabKey);
+    });
+
+    // Update Tab Views
+    document.querySelectorAll('.tab-content').forEach(view => {
+      view.classList.toggle('active', view.id === `tab-${tabKey}`);
+    });
+  }
+
+  initModals() {
+    // Close modal on background click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+        }
+      });
+    });
+
+    // Close buttons
+    document.querySelectorAll('.modal-close').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const modal = btn.closest('.modal-overlay');
+        if (modal) modal.classList.remove('active');
+      });
+    });
+  }
+
+  openModal(modalId) {
+    const m = document.getElementById(modalId);
+    if (m) m.classList.add('active');
+  }
+
+  closeModal(modalId) {
+    const m = document.getElementById(modalId);
+    if (m) m.classList.remove('active');
+  }
+
+  initHeaderControls() {
+    // Reset Data Button
+    const btnReset = document.getElementById('btn-reset-blueprint');
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        if (confirm('Reset entire planner back to SK ZeroGravity blueprint sample data?')) {
+          StorageManager.resetToBlueprint();
+          window.location.reload();
+        }
+      });
+    }
+
+    // Export Backup Button
+    const btnExport = document.getElementById('btn-export-json');
+    if (btnExport) {
+      btnExport.addEventListener('click', () => {
+        StorageManager.exportJSON();
+        this.showToast('JSON Backup downloaded!');
+      });
+    }
+
+    // Header Sound Toggles
+    const navBinaural = document.getElementById('nav-toggle-binaural');
+    const navDrone = document.getElementById('nav-toggle-drone');
+
+    if (navBinaural) {
+      navBinaural.addEventListener('click', () => {
+        const active = window.soundEngine.toggleBinaural();
+        navBinaural.classList.toggle('active', active);
+      });
+    }
+
+    if (navDrone) {
+      navDrone.addEventListener('click', () => {
+        const active = window.soundEngine.toggleDrone();
+        navDrone.classList.toggle('active', active);
+      });
+    }
+  }
+
+  showToast(message) {
+    if (!this.toastContainer) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    this.toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(15px)';
+      toast.style.transition = 'all 0.3s ease';
+      setTimeout(() => toast.remove(), 300);
+    }, 2800);
+  }
+}
+
+// Global App Initialization
+window.addEventListener('DOMContentLoaded', () => {
+  window.app = new App();
+});
+
+  </script>
 </body>
 </html>
+
